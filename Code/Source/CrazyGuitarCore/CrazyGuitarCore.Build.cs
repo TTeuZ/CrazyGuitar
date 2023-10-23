@@ -1,7 +1,7 @@
 using UnrealBuildTool;
 
-public class Game : ModuleRules {
-    public Game(ReadOnlyTargetRules Target) : base(Target) {
+public class CrazyGuitarCore : ModuleRules {
+    public CrazyGuitarCore(ReadOnlyTargetRules Target) : base(Target) {
         PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
         bEnforceIWYU = true;
 
