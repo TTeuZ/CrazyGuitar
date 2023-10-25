@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "CrazyGuitar",
+			"Path": "D:\\9. Projects\\CrazyGuitar\\Code\\CrazyGuitar\\Source\\CrazyGuitar.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "CrazyGuitarEditor",
+			"Path": "D:\\9. Projects\\CrazyGuitar\\Code\\CrazyGuitar\\Source\\CrazyGuitarEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
