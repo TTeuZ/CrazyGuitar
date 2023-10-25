@@ -1,8 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CrazyGuitarGameModeBase.generated.h"
 #include "GameFramework/GameModeBase.h"
+#include "CrazyGuitarGameModeBase.generated.h"
 
 UCLASS()
 class CRAZYGUITAR_API ACrazyGuitarGameModeBase : public AGameModeBase {
