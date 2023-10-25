@@ -1,1 +1,0 @@
-This folder contains all the necessary bat files to run, build and execute the game on linux

@@ -1,9 +1,10 @@
 using UnrealBuildTool;
+using System.Collections.Generic;
 
 public class CrazyGuitarEditorTarget : TargetRules {
-    public CrazyGuitarEditorTarget(TargetInfo Target) : base(Target) {
-        Type = TargetType.Editor;
-        DefaultBuildSettings = BuildSettingsVersion.V2;
-        ExtraModuleNames.AddRange( new string[] { "CrazyGuitarCore" } );
-    }
+	public CrazyGuitarEditorTarget( TargetInfo Target) : base(Target) {
+		Type = TargetType.Editor;
+		DefaultBuildSettings = BuildSettingsVersion.V2;
+		ExtraModuleNames.AddRange( new string[] { "CrazyGuitar" } );
+	}
 }

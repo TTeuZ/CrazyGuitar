@@ -1,13 +1,13 @@
 {
-    "FileVersion": 1,
-    "EngineAssociation": "4.27",
-    "Category": "",
-    "Description": "",
-    "Modules": [
-        {
-            "Name": "CrazyGuitarCore",
-            "Type": "Runtime",
-            "LoadingPhase": "Default"
-        }
-    ]
+	"FileVersion": 3,
+	"EngineAssociation": "4.27",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "CrazyGuitar",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
 }

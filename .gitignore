@@ -1,6 +1,8 @@
-Code/Binaries/
-Code/Build/
-Code/Content/
-Code/DerivedDataCache/
-Code/Intermediate/
-Code/Saved/
+Binaries/
+Build/
+Content/
+DerivedDataCache/
+Intermediate/
+Saved/
+Config
+.vs/
