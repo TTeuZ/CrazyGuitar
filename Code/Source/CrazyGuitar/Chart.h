@@ -19,7 +19,7 @@ class CRAZYGUITAR_API AChart : public APawn {
     AChart();
     ~AChart();
 
-    virtual void Tick(float DeltaTime) override;
+    virtual void Tick(float deltaTime) override;
 
     virtual void SetupPlayerInputComponent(
         class UInputComponent* PlayerInputComponent) override;

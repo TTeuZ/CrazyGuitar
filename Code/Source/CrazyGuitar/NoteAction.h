@@ -14,7 +14,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
     ~ANoteAction() = default;
 
-    virtual void Tick(float DeltaTime) override;
+    virtual void Tick(float deltaTime) override;
 
     bool isHit(uint8_t chordHited, int32_t positionHited);
 

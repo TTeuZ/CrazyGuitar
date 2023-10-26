@@ -11,7 +11,7 @@ AChart::~AChart() { this->clearNoteActions(); }
 
 void AChart::BeginPlay() { Super::BeginPlay(); }
 
-void AChart::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
+void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
 
 void AChart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
     Super::SetupPlayerInputComponent(PlayerInputComponent);

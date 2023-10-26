@@ -9,9 +9,9 @@ ANoteAction::ANoteAction(uint8_t chord, float position) : ANoteAction() {
 
 void ANoteAction::BeginPlay() { Super::BeginPlay(); }
 
-void ANoteAction::Tick(float DeltaTime) {
-    Super::Tick(DeltaTime);
-    this->move(DeltaTime);
+void ANoteAction::Tick(float deltaTime) {
+    Super::Tick(deltaTime);
+    this->move(deltaTime);
 }
 
 void ANoteAction::move(float deltaTime) {
