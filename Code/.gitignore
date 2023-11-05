@@ -3,7 +3,14 @@
 .cache/
 Content/2D*
 Content/StarterContent/*
-Intermediate/*
+Saved/
+DerivedDataCache/
+
+# Linux temporary files
+CMakeLists.txt
+Makefile
+*.pro
+*.kdev4
 
 # Compiled Object files
 *.slo
