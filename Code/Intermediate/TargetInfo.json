@@ -2,12 +2,12 @@
 	"Targets": [
 		{
 			"Name": "CrazyGuitar",
-			"Path": "D:\\9. Projects\\CrazyGuitar\\Code\\CrazyGuitar\\Source\\CrazyGuitar.Target.cs",
+			"Path": "/home/lucas/Ufpr/2023_2/CPP/projects/CrazyGuitar/Code/Source/CrazyGuitar.target.cs",
 			"Type": "Game"
 		},
 		{
 			"Name": "CrazyGuitarEditor",
-			"Path": "D:\\9. Projects\\CrazyGuitar\\Code\\CrazyGuitar\\Source\\CrazyGuitarEditor.Target.cs",
+			"Path": "/home/lucas/Ufpr/2023_2/CPP/projects/CrazyGuitar/Code/Source/CrazyGuitarEditor.target.cs",
 			"Type": "Editor"
 		}
 	]
