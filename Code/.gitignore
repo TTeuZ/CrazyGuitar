@@ -1,5 +1,9 @@
+# Personal files
 .vscode/
 .cache/
+Content/2D*
+Content/StarterContent/*
+Intermediate/*
 
 # Compiled Object files
 *.slo
