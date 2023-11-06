@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Constants.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "NoteAction.generated.h"

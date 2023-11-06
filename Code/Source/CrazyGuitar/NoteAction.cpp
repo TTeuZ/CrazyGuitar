@@ -14,6 +14,11 @@ void ANoteAction::Tick(float deltaTime) {
     this->move(deltaTime);
 }
 
+bool ANoteAction::isHit(uint8_t chordHited, int32_t positionHited) {
+    return chord == chordHited && positionHited > Constants::HITBOX_START &&
+           positionHited < Constants::HITBOX_END;
+}
+
 void ANoteAction::move(float deltaTime) {
     FVector location = GetActorLocation();
     location.X += deltaTime * 100;

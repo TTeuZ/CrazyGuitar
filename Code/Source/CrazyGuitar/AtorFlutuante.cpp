@@ -17,12 +17,12 @@ void AAtorFlutuante::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
     this->novaLocalizacao = this->GetActorLocation();
-    UE_LOG(LogTemp, Warning, TEXT("novaLocalizacao: %s\n"), *this->novaLocalizacao.ToString());
+    // UE_LOG(LogTemp, Warning, TEXT("novaLocalizacao: %s\n"), *this->novaLocalizacao.ToString());
     this->alturaDelta = FMath::Sin(this->tempoExecucao + DeltaTime) - FMath::Sin(this->tempoExecucao);
-    UE_LOG(LogTemp, Warning, TEXT("alturaDelta: %f\n"), this->alturaDelta);
-    this->novaLocalizacao.Z += this->alturaDelta * 20.f;
-    UE_LOG(LogTemp, Warning, TEXT("novaLocalizacao: %s\n"), *this->novaLocalizacao.ToString());
+    // UE_LOG(LogTemp, Warning, TEXT("alturaDelta: %f\n"), this->alturaDelta);
+    this->novaLocalizacao.Z += this->alturaDelta * 30.f;
+    // UE_LOG(LogTemp, Warning, TEXT("novaLocalizacao: %s\n"), *this->novaLocalizacao.ToString());
     this->tempoExecucao += DeltaTime;
-    UE_LOG(LogTemp, Warning, TEXT("tempoExecucao: %f\n"), this->tempoExecucao);
+    // UE_LOG(LogTemp, Warning, TEXT("tempoExecucao: %f\n"), this->tempoExecucao);
     this->SetActorLocation(this->novaLocalizacao);
 }
