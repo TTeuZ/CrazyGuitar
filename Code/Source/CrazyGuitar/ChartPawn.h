@@ -1,6 +1,7 @@
 #pragma once
 
 // Standard includes
+#include <array>
 #include <cstdint>
 #include <list>
 #include <string>
@@ -20,6 +21,12 @@
 UCLASS()
 class CRAZYGUITAR_API AChartPawn : public APawn {
     GENERATED_BODY()
+
+    static constexpr uint8_t MAX_CHORDS{4};
+    const FVector CHART_SIZE{10.f, 220.f, 60.f};
+    const FVector CHART_SCALE{CHART_SIZE / 50.f};
+    const FVector CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
+    const FVector CAMERA_INITIAL_LOCATION{-220.f, 0.f, -50.f};
 
    public:
     AChartPawn();
@@ -66,8 +73,7 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     USceneComponent* visibleComponent;
     UPROPERTY(EditAnywhere)
     UCameraComponent* chartCamera;
-    UPROPERTY(EditAnywhere)
-    TArray<UStaticMeshComponent*> staticMeshes;
+    std::array<UStaticMeshComponent*, 4> staticMeshes;
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* hitBoxVisual;
 };

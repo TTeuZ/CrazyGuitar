@@ -6,19 +6,15 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
 
-static constexpr uint8_t MAX_CHORDS(4);
-static const FVector CHART_SIZE(10.f, 220.f, 60.f);
-static const FVector CHART_SCALE(CHART_SIZE / 50.f);
-static const FVector CHART_INITIAL_LOCATION(200.f, 0.f, 250.f);
-static const FVector CAMERA_INITIAL_LOCATION(-220.f, 0.f, -50.f);
-
 AChartPawn::AChartPawn() {
     PrimaryActorTick.bCanEverTick = true;
 
     this->noteSpeed = 1;
     this->noteActions = std::list<ANoteAction*>();
+    this->staticMeshes = std::array<UStaticMeshComponent*, 4>{nullptr, nullptr, nullptr, nullptr};
     this->boxVisualMaterial = nullptr;
     this->stringVisualMaterial = nullptr;
+    this->hitBoxVisualMaterial = nullptr;
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset(TEXT("/Game/Shapes/Shape_Cube.Shape_Cube"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset(
@@ -76,6 +72,30 @@ AChartPawn::~AChartPawn() { this->clearNoteActions(); }
 void AChartPawn::BeginPlay() {
     Super::BeginPlay();
     SetActorLocation(CHART_INITIAL_LOCATION);
+    float zJump = (CHART_SIZE.Z * 2) / (MAX_CHORDS + 1);
+    FVector defaultLocation{CHART_INITIAL_LOCATION.X * 0.9f,
+    500.f, CHART_INITIAL_LOCATION.Z + CHART_SIZE.Z - zJump};
+
+    // ANoteAction* noteAction1 = new ANoteAction(0, defaultLocation);
+    // replace new operator to use in unreal
+    ANoteAction* noteAction1;
+    noteAction1 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
+    noteAction1->setChord(0);
+    noteAction1->setPosition(defaultLocation + FVector{0, 0, -zJump * noteAction1->getChord()});
+
+    ANoteAction* noteAction2;
+    noteAction2 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
+    noteAction2->setChord(1);
+    noteAction2->setPosition(defaultLocation + FVector{0, 100.f, -zJump * noteAction2->getChord()});
+
+    ANoteAction* noteAction3;
+    noteAction3 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
+    noteAction3->setChord(2);
+    noteAction3->setPosition(defaultLocation + FVector{0, 350.f, -zJump * noteAction3->getChord()});
+
+    this->addNoteAction(noteAction1);
+    this->addNoteAction(noteAction2);
+    this->addNoteAction(noteAction3);
 }
 
 void AChartPawn::Tick(float deltaTime) { Super::Tick(deltaTime); }
@@ -92,14 +112,27 @@ void AChartPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 }
 
 void AChartPawn::hitChord(int8_t chord) {
-    // ANoteAction* noteAction(*this->noteActions.begin());
-    // FVector location = noteAction->GetActorLocation();
+    ANoteAction* noteAction(*this->noteActions.begin());
+    FVector location = noteAction->getPosition();
+    UE_LOG(LogTemp, Warning, TEXT("HIT LOCATION %f"), location.Y);
+    UE_LOG(LogTemp, Warning, TEXT("HIT CHORD %d"), chord + 1);
 
     // check if note is in hitbox
-    // bool ret = noteAction->isHit(0, location.X);
-    bool ret = true;
+    bool ret = noteAction->isHit(chord, location.Y);
 
-    UE_LOG(LogTemp, Warning, TEXT("HIT CHORD %d"), chord + 1);
+    if (ret) {
+        // play note
+        this->playNoteAction();
+        // remove note from list
+        this->popNoteAction();
+        // destroy note
+        noteAction->Destroy();
+        
+        UE_LOG(LogTemp, Log, TEXT("HIT CORRECT"));
+        return;
+    }
+    UE_LOG(LogTemp, Log, TEXT("HIT WRONG"));
+    return;
 }
 
 void AChartPawn::addNoteAction(ANoteAction* noteAction) { noteActions.push_back(noteAction); }
@@ -148,19 +181,20 @@ void AChartPawn::createStringVisual(void* boxComponentPtr, void* cylinderVisualA
 
     // Cria e posiciona quatro componentes de malha para representar as cordas
     // da guitarra. Cada componente é um cilindro
-    for (int i = 0; i < MAX_CHORDS; ++i) {
+    std::array<UStaticMeshComponent*, 4>::iterator it{this->staticMeshes.begin()};
+    for (int8_t i{0}; it != this->staticMeshes.end(); ++i, ++it) {
         FVector stringBoxScale(0.02f, 0.02f, CHART_SCALE.Y);
         FVector stringLocation(-10.f, CHART_SIZE.Y, CHART_SIZE.Z);
         stringLocation.Z -= ((CHART_SIZE.Z * 2) / (MAX_CHORDS + 1)) * (i + 1);
         FRotator stringRotation(0.f, 0.f, 270.0f);
         FString stringName = FString::Printf(TEXT("String%d"), i);
-        this->staticMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(*stringName));
-        this->staticMeshes[i]->SetupAttachment(boxComponent);
-        this->staticMeshes[i]->SetStaticMesh(cylinderVisualAsset.Object);
-        this->staticMeshes[i]->SetRelativeLocationAndRotation(stringLocation, stringRotation);
-        this->staticMeshes[i]->SetWorldScale3D(stringBoxScale);
-        this->staticMeshes[i]->SetMaterial(0, this->stringVisualMaterial);
-        this->staticMeshes[i]->SetCastShadow(false);
+        (*it) = CreateDefaultSubobject<UStaticMeshComponent>(*stringName);
+        (*it)->SetupAttachment(boxComponent);
+        (*it)->SetStaticMesh(cylinderVisualAsset.Object);
+        (*it)->SetRelativeLocationAndRotation(stringLocation, stringRotation);
+        (*it)->SetWorldScale3D(stringBoxScale);
+        (*it)->SetMaterial(0, this->stringVisualMaterial);
+        (*it)->SetCastShadow(false);
     }
 }
 

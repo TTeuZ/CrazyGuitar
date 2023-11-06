@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Math/Vector.h"
 #include "NoteAction.generated.h"
 
 UCLASS()
@@ -12,19 +13,28 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
    public:
     ANoteAction();
-    ANoteAction(uint8_t chord, float position = 0);
+    ANoteAction(const uint8_t chord, const FVector position = FVector{0, 0, 0});
 
     ~ANoteAction() = default;
 
-    virtual void Tick(float deltaTime) override;
+    uint8_t getChord() const;
+    void setChord(const uint8_t newChord);
 
-    bool isHit(uint8_t chordHited, int32_t positionHited);
+    FVector getPosition() const;
+    void setPosition(const FVector position);
+
+    virtual void Tick(const float deltaTime) override;
+
+    bool isHit(const uint8_t chordHited, const int32_t positionHited) const;
 
    protected:
     virtual void BeginPlay() override;
 
    private:
-    void move(float deltaTime);
+    void move(const float deltaTime);
 
     uint8_t chord;
+
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* noteVisual;
 };
