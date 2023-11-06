@@ -1,19 +1,21 @@
 #pragma once
 
+// Standard includes
 #include <cstdint>
 #include <list>
+#include <string>
 
+// Personal includes
 #include "NoteAction.h"
 
-#include "CoreMinimal.h"
+// Unreal includes
 #include "Camera/CameraComponent.h"
-#include "Materials/Material.h"
+#include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Materials/Material.h"
 
 // Must be the last include
 #include "ChartPawn.generated.h"
-
-constexpr uint8_t MAX_CHORDS = 4;
 
 UCLASS()
 class CRAZYGUITAR_API AChartPawn : public APawn {
@@ -39,9 +41,9 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     virtual void BeginPlay() override;
 
    private:
-    void createBoxVisual(void* boxComponentPtr, FVector boxLocation, FVector boxExtent, void* boxVisualAssetPtr);
-    void createStringVisual(void* stringComponentPtr, FVector rootExtent, void* boxComponentPtr,
-                            void* stringVisualAssetPtr);
+    void createBoxVisual(void* boxComponentPtr, FVector rootLocation, void* boxVisualAssetPtr);
+    void createStringVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr);
+    void createHitboxVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr);
 
     void clearNoteActions();
     void playNoteAction();
@@ -56,6 +58,7 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
 
     UMaterial* boxVisualMaterial;
     UMaterial* stringVisualMaterial;
+    UMaterial* hitBoxVisualMaterial;
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* boxVisual;
@@ -65,4 +68,6 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     UCameraComponent* chartCamera;
     UPROPERTY(EditAnywhere)
     TArray<UStaticMeshComponent*> staticMeshes;
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* hitBoxVisual;
 };

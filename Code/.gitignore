@@ -3,6 +3,8 @@
 .cache/
 Content/2D*
 Content/StarterContent/*
+!Content/StarterContent/Textures/
+!Content/StarterContent/Materials/
 Saved/
 DerivedDataCache/
 
