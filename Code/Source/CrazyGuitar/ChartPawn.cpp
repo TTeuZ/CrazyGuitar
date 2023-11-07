@@ -11,33 +11,38 @@ AChartPawn::AChartPawn() {
 
     this->noteSpeed = 1;
     this->noteActions = std::list<ANoteAction*>();
-    this->staticMeshes = std::array<UStaticMeshComponent*, 4>{nullptr, nullptr, nullptr, nullptr};
+    this->staticMeshes = std::array<UStaticMeshComponent*, 4>{nullptr, nullptr,
+                                                              nullptr, nullptr};
     this->boxVisualMaterial = nullptr;
     this->stringVisualMaterial = nullptr;
     this->hitBoxVisualMaterial = nullptr;
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset(TEXT("/Game/Shapes/Shape_Cube.Shape_Cube"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset(
+        TEXT("/Game/Shapes/Shape_Cube.Shape_Cube"));
     static ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset(
         TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder"));
 
-    static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterial(
+    static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterialLoader(
         TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut"));
-    static ConstructorHelpers::FObjectFinder<UMaterial> stringVisualMaterial(
-        TEXT("/Game/StarterContent/Materials/M_Metal_Burnished_Steel.M_Metal_Burnished_Steel"));
-    static ConstructorHelpers::FObjectFinder<UMaterial> hitBoxVisualMaterial(TEXT("/Game/Materials/M_Hit_Box"));
+    static ConstructorHelpers::FObjectFinder<UMaterial>
+        stringVisualMaterialLoader(
+            TEXT("/Game/StarterContent/Materials/"
+                 "M_Metal_Burnished_Steel.M_Metal_Burnished_Steel"));
+    static ConstructorHelpers::FObjectFinder<UMaterial>
+        hitBoxVisualMaterialLoader(TEXT("/Game/Materials/M_Hit_Box"));
 
-    if (boxVisualMaterial.Succeeded()) {
-        this->boxVisualMaterial = boxVisualMaterial.Object;
+    if (boxVisualMaterialLoader.Succeeded()) {
+        this->boxVisualMaterial = boxVisualMaterialLoader.Object;
     } else {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find wood material"));
     }
-    if (stringVisualMaterial.Succeeded()) {
-        this->stringVisualMaterial = stringVisualMaterial.Object;
+    if (stringVisualMaterialLoader.Succeeded()) {
+        this->stringVisualMaterial = stringVisualMaterialLoader.Object;
     } else {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find metal material"));
     }
-    if (hitBoxVisualMaterial.Succeeded()) {
-        this->hitBoxVisualMaterial = hitBoxVisualMaterial.Object;
+    if (hitBoxVisualMaterialLoader.Succeeded()) {
+        this->hitBoxVisualMaterial = hitBoxVisualMaterialLoader.Object;
     } else {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find hitbox material"));
     }
@@ -47,7 +52,8 @@ AChartPawn::AChartPawn() {
 
     // Cria o componente do braco da guitarra
     // Setando o componente como o componente raiz
-    UBoxComponent* boxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("RootComponent"));
+    UBoxComponent* boxComponent =
+        CreateDefaultSubobject<UBoxComponent>(TEXT("RootComponent"));
     RootComponent = boxComponent;
 
     // Define a localizacao e o tamanho do componente
@@ -57,8 +63,10 @@ AChartPawn::AChartPawn() {
     this->createStringVisual(boxComponent, &cylinderVisualAsset);
     this->createHitboxVisual(boxComponent, &cylinderVisualAsset);
 
-    this->visibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleComponent"));
-    this->chartCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+    this->visibleComponent =
+        CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleComponent"));
+    this->chartCamera =
+        CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 
     FVector cameraLocation(CAMERA_INITIAL_LOCATION);
     this->chartCamera->SetRelativeLocation(cameraLocation);
@@ -73,25 +81,31 @@ void AChartPawn::BeginPlay() {
     Super::BeginPlay();
     SetActorLocation(CHART_INITIAL_LOCATION);
     float zJump = (CHART_SIZE.Z * 2) / (MAX_CHORDS + 1);
-    FVector defaultLocation{CHART_INITIAL_LOCATION.X * 0.9f,
-    500.f, CHART_INITIAL_LOCATION.Z + CHART_SIZE.Z - zJump};
+    FVector defaultLocation{CHART_INITIAL_LOCATION.X * 0.9f, 500.f,
+                            CHART_INITIAL_LOCATION.Z + CHART_SIZE.Z - zJump};
 
     // ANoteAction* noteAction1 = new ANoteAction(0, defaultLocation);
     // replace new operator to use in unreal
     ANoteAction* noteAction1;
-    noteAction1 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
+    noteAction1 =
+        GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
     noteAction1->setChord(0);
-    noteAction1->setPosition(defaultLocation + FVector{0, 0, -zJump * noteAction1->getChord()});
+    noteAction1->setPosition(defaultLocation +
+                             FVector{0, 0, -zJump * noteAction1->getChord()});
 
     ANoteAction* noteAction2;
-    noteAction2 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
+    noteAction2 =
+        GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
     noteAction2->setChord(1);
-    noteAction2->setPosition(defaultLocation + FVector{0, 100.f, -zJump * noteAction2->getChord()});
+    noteAction2->setPosition(
+        defaultLocation + FVector{0, 100.f, -zJump * noteAction2->getChord()});
 
     ANoteAction* noteAction3;
-    noteAction3 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
+    noteAction3 =
+        GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
     noteAction3->setChord(2);
-    noteAction3->setPosition(defaultLocation + FVector{0, 350.f, -zJump * noteAction3->getChord()});
+    noteAction3->setPosition(
+        defaultLocation + FVector{0, 350.f, -zJump * noteAction3->getChord()});
 
     this->addNoteAction(noteAction1);
     this->addNoteAction(noteAction2);
@@ -100,15 +114,20 @@ void AChartPawn::BeginPlay() {
 
 void AChartPawn::Tick(float deltaTime) { Super::Tick(deltaTime); }
 
-void AChartPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
+void AChartPawn::SetupPlayerInputComponent(
+    UInputComponent* PlayerInputComponent) {
     Super::SetupPlayerInputComponent(PlayerInputComponent);
 
     if (!PlayerInputComponent) return;
 
-    PlayerInputComponent->BindAction("HitFirstChord", IE_Pressed, this, &AChartPawn::hitFirstChord);
-    PlayerInputComponent->BindAction("HitSecondChord", IE_Pressed, this, &AChartPawn::hitSecondChord);
-    PlayerInputComponent->BindAction("HitThirdChord", IE_Pressed, this, &AChartPawn::hitThirdChord);
-    PlayerInputComponent->BindAction("HitFourthChord", IE_Pressed, this, &AChartPawn::hitFourthChord);
+    PlayerInputComponent->BindAction("HitFirstChord", IE_Pressed, this,
+                                     &AChartPawn::hitFirstChord);
+    PlayerInputComponent->BindAction("HitSecondChord", IE_Pressed, this,
+                                     &AChartPawn::hitSecondChord);
+    PlayerInputComponent->BindAction("HitThirdChord", IE_Pressed, this,
+                                     &AChartPawn::hitThirdChord);
+    PlayerInputComponent->BindAction("HitFourthChord", IE_Pressed, this,
+                                     &AChartPawn::hitFourthChord);
 }
 
 void AChartPawn::hitChord(int8_t chord) {
@@ -127,7 +146,7 @@ void AChartPawn::hitChord(int8_t chord) {
         this->popNoteAction();
         // destroy note
         noteAction->Destroy();
-        
+
         UE_LOG(LogTemp, Log, TEXT("HIT CORRECT"));
         return;
     }
@@ -135,13 +154,18 @@ void AChartPawn::hitChord(int8_t chord) {
     return;
 }
 
-void AChartPawn::addNoteAction(ANoteAction* noteAction) { noteActions.push_back(noteAction); }
+void AChartPawn::addNoteAction(ANoteAction* noteAction) {
+    noteActions.push_back(noteAction);
+}
 
-void AChartPawn::removeNoteAction(ANoteAction* noteAction) { noteActions.remove(noteAction); }
+void AChartPawn::removeNoteAction(ANoteAction* noteAction) {
+    noteActions.remove(noteAction);
+}
 
 void AChartPawn::popNoteAction() { noteActions.pop_front(); }
 
-void AChartPawn::createBoxVisual(void* boxComponentPtr, FVector rootLocation, void* boxVisualAssetPtr) {
+void AChartPawn::createBoxVisual(void* boxComponentPtr, FVector rootLocation,
+                                 void* boxVisualAssetPtr) {
     FVector boxVisualScale(CHART_SCALE);
 
     // Convertendo o ponteiro para o tipo correto
@@ -156,7 +180,8 @@ void AChartPawn::createBoxVisual(void* boxComponentPtr, FVector rootLocation, vo
     boxComponent->SetCollisionProfileName(TEXT("Pawn"));
 
     // Cria e posiciona um componente de malha (MeshComponent)
-    this->boxVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualRepresentation"));
+    this->boxVisual = CreateDefaultSubobject<UStaticMeshComponent>(
+        TEXT("VisualRepresentation"));
     boxVisual->SetupAttachment(boxComponent);
     if (boxVisualAsset.Succeeded()) {
         boxVisual->SetStaticMesh(boxVisualAsset.Object);
@@ -168,10 +193,11 @@ void AChartPawn::createBoxVisual(void* boxComponentPtr, FVector rootLocation, vo
     }
 }
 
-void AChartPawn::createStringVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr) {
+void AChartPawn::createStringVisual(void* boxComponentPtr,
+                                    void* cylinderVisualAssetPtr) {
     // Convertendo o ponteiro para o tipo correto
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
+    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset = *((
+        ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
     UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
 
     if (!cylinderVisualAsset.Succeeded()) {
@@ -181,7 +207,8 @@ void AChartPawn::createStringVisual(void* boxComponentPtr, void* cylinderVisualA
 
     // Cria e posiciona quatro componentes de malha para representar as cordas
     // da guitarra. Cada componente é um cilindro
-    std::array<UStaticMeshComponent*, 4>::iterator it{this->staticMeshes.begin()};
+    std::array<UStaticMeshComponent*, 4>::iterator it{
+        this->staticMeshes.begin()};
     for (int8_t i{0}; it != this->staticMeshes.end(); ++i, ++it) {
         FVector stringBoxScale(0.02f, 0.02f, CHART_SCALE.Y);
         FVector stringLocation(-10.f, CHART_SIZE.Y, CHART_SIZE.Z);
@@ -198,17 +225,19 @@ void AChartPawn::createStringVisual(void* boxComponentPtr, void* cylinderVisualA
     }
 }
 
-void AChartPawn::createHitboxVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr) {
+void AChartPawn::createHitboxVisual(void* boxComponentPtr,
+                                    void* cylinderVisualAssetPtr) {
     // Convertendo o ponteiro para o tipo correto
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
+    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset = *((
+        ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
     UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
 
     if (cylinderVisualAsset.Succeeded()) {
         FVector hitBoxBoxScale(0.2f, 0.2f, CHART_SCALE.Z * 1.05f);
         FVector hitBoxLocation(-10.f, -154.f, -CHART_SIZE.Z * 1.05f);
         FString hitBoxName = FString::Printf(TEXT("HitBox"));
-        this->hitBoxVisual = CreateDefaultSubobject<UStaticMeshComponent>(*hitBoxName);
+        this->hitBoxVisual =
+            CreateDefaultSubobject<UStaticMeshComponent>(*hitBoxName);
         this->hitBoxVisual->SetupAttachment(boxComponent);
         this->hitBoxVisual->SetStaticMesh(cylinderVisualAsset.Object);
         this->hitBoxVisual->SetRelativeLocation(hitBoxLocation);
