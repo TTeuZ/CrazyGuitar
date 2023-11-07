@@ -7,4 +7,7 @@
 UCLASS()
 class CRAZYGUITAR_API ACrazyGuitarGameModeBase : public AGameModeBase {
     GENERATED_BODY()
+
+   public:
+    ACrazyGuitarGameModeBase();
 };

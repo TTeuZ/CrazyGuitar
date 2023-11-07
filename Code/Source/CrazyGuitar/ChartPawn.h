@@ -22,15 +22,10 @@ UCLASS()
 class CRAZYGUITAR_API AChartPawn : public APawn {
     GENERATED_BODY()
 
-    static constexpr uint8_t MAX_CHORDS{4};
-    const FVector CHART_SIZE{10.f, 220.f, 60.f};
-    const FVector CHART_SCALE{CHART_SIZE / 50.f};
-    const FVector CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
-    const FVector CAMERA_INITIAL_LOCATION{-220.f, 0.f, -50.f};
-
    public:
     AChartPawn();
-    ~AChartPawn();
+
+    virtual ~AChartPawn();
 
     virtual void Tick(float deltaTime) override;
 
@@ -48,18 +43,31 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     virtual void BeginPlay() override;
 
    private:
+    constexpr static uint8_t MAX_CHORDS{4};
+    const FVector CHART_SIZE{10.f, 220.f, 60.f};
+    const FVector CHART_SCALE{CHART_SIZE / 50.f};
+    const FVector CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
+    const FVector CAMERA_INITIAL_LOCATION{-220.f, 0.f, -50.f};
+
     void createBoxVisual(void* boxComponentPtr, FVector rootLocation, void* boxVisualAssetPtr);
+
     void createStringVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr);
+
     void createHitboxVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr);
 
     void clearNoteActions();
+
     void playNoteAction();
 
     void hitFirstChord();
+
     void hitSecondChord();
+
     void hitThirdChord();
+
     void hitFourthChord();
 
+    // Member Data
     std::list<ANoteAction*> noteActions;
     int8_t noteSpeed;
 

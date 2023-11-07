@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Constants.h"
-
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Math/Vector.h"
@@ -13,14 +11,17 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
    public:
     ANoteAction();
+
     ANoteAction(const uint8_t chord, const FVector position = FVector{0, 0, 0});
 
-    ~ANoteAction() = default;
+    virtual ~ANoteAction() = default;
 
     uint8_t getChord() const;
-    void setChord(const uint8_t newChord);
 
     FVector getPosition() const;
+
+    void setChord(const uint8_t newChord);
+
     void setPosition(const FVector position);
 
     virtual void Tick(const float deltaTime) override;
@@ -31,10 +32,16 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     virtual void BeginPlay() override;
 
    private:
+    constexpr static uint8_t HITBOX_SCALE{20};  // in percent
+    constexpr static uint8_t HITBOX_START{154};
+    constexpr static uint8_t HITBOX_SIZE{44};
+    constexpr static uint8_t HITBOX_END{HITBOX_START - HITBOX_SIZE};
+    constexpr static uint8_t HITBOX_CENTER{HITBOX_START - (HITBOX_SIZE / 2)};
+
     void move(const float deltaTime);
 
     uint8_t chord;
-
+    
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* noteVisual;
 };
