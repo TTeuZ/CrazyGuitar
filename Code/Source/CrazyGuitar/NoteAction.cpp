@@ -11,7 +11,6 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false} {
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> noteVisualAsset{TEXT("/Game/Shapes/Shape_Sphere.Shape_Sphere")};
 
-    // (Unreal do not allow to use {} in this constructor)
     USphereComponent* sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("NoteAction"));
     this->RootComponent = sphereComponent;
 
@@ -37,7 +36,7 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false} {
 ANoteAction::ANoteAction(const uint8_t chord, const FVector position)
     : ANoteAction() {
     this->chord = chord;
-    this->SetActorLocation(position);
+    this->setPosition(position);
 }
 
 uint8_t ANoteAction::getChord() const { return this->chord; }
@@ -53,11 +52,6 @@ void ANoteAction::setChord(uint8_t newChord) { this->chord = newChord; }
 void ANoteAction::setPosition(const FVector& position) { this->SetActorLocation(position); }
 
 void ANoteAction::setCanMove(const bool newCanMove) { this->canMove = newCanMove; }
-
-void ANoteAction::BeginPlay() { 
-    Super::BeginPlay(); 
-    SetActorLocation(FVector{0, 0, 500});
-}
 
 void ANoteAction::BeginPlay() {
     Super::BeginPlay();

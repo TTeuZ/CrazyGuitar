@@ -8,13 +8,12 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
 
-AChartPawn::AChartPawn() : boxVisualMaterial{nullptr}, stringVisualMaterial{nullptr}, hitBoxVisualMaterial{nullptr} {
+AChartPawn::AChartPawn() : boxVisualMaterial{nullptr}, stringVisualMaterial{nullptr}, hitBoxVisualMaterial{nullptr}, staticMeshes{nullptr, nullptr, nullptr, nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
 
     // Initial definition for chart member data
     this->noteSpeed = 1; // TODO: To be moved to Notes class
     this->noteActions = std::list<ANoteAction*>{};  // TODO: To be moved to Notes class
-    this->staticMeshes = std::array<UStaticMeshComponent*, 4>{nullptr, nullptr, nullptr, nullptr};
 
     // Constructors helpers to build the chart
     static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
@@ -62,7 +61,7 @@ AChartPawn::AChartPawn() : boxVisualMaterial{nullptr}, stringVisualMaterial{null
 
 void AChartPawn::BeginPlay() {
     Super::BeginPlay();
-    SetActorLocation(CHART_INITIAL_LOCATION);
+    this->SetActorLocation(CHART_INITIAL_LOCATION);
 }
 
 void AChartPawn::Tick(float deltaTime) { Super::Tick(deltaTime); }
@@ -110,11 +109,11 @@ void AChartPawn::hitChord(int8_t chord) {
     }
 }
 
-void AChartPawn::addNoteAction(ANoteAction* noteAction) { noteActions.push_back(noteAction); }
+void AChartPawn::addNoteAction(ANoteAction* noteAction) { this->noteActions.push_back(noteAction); }
 
-void AChartPawn::removeNoteAction(ANoteAction* noteAction) { noteActions.remove(noteAction); }
+void AChartPawn::removeNoteAction(ANoteAction* noteAction) { this->noteActions.remove(noteAction); }
 
-void AChartPawn::popNoteAction() { noteActions.pop_front(); }
+void AChartPawn::popNoteAction() { this->noteActions.pop_front(); }
 
 void AChartPawn::createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation, const void* const boxVisualAssetPtr) {
     FVector boxVisualScale{CHART_SCALE};
