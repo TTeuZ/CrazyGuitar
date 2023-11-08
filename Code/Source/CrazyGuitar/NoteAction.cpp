@@ -6,7 +6,7 @@
 #include "UObject/Object.h"
 #include "Components/SphereComponent.h"
 
-ANoteAction::ANoteAction() : chord{0} {
+ANoteAction::ANoteAction() : chord{0}, canMove{false} {
     this->PrimaryActorTick.bCanEverTick = true;
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> noteVisualAsset{TEXT("/Game/Shapes/Shape_Sphere.Shape_Sphere")};
@@ -50,8 +50,13 @@ const FVector ANoteAction::getPosition() const { return this->GetActorLocation()
 */
 void ANoteAction::setChord(uint8_t newChord) { this->chord = newChord; }
 
-void ANoteAction::setPosition(const FVector& position) {
-    this->SetActorLocation(position);
+void ANoteAction::setPosition(const FVector& position) { this->SetActorLocation(position); }
+
+void ANoteAction::setCanMove(const bool newCanMove) { this->canMove = newCanMove; }
+
+void ANoteAction::BeginPlay() { 
+    Super::BeginPlay(); 
+    SetActorLocation(FVector{0, 0, 500});
 }
 
 void ANoteAction::BeginPlay() {
@@ -71,10 +76,18 @@ bool ANoteAction::isHit(uint8_t chordHited, int32_t positionHited) const {
     return this->chord == chordHited && positionHited > -HITBOX_START && positionHited < -HITBOX_END;
 }
 
-void ANoteAction::move(float deltaTime) {
-    FVector location = this->getPosition();
-    location.Y -= deltaTime * 200;
+void ANoteAction::playNote() {
+    UE_LOG(LogTemp, Warning, TEXT("Play note"));
+}
 
-    if (location.Y < -500) location.Y = 500;
+void ANoteAction::move(const float deltaTime) {
+    if (!this->canMove)
+        return;
+
+    FVector location = GetActorLocation();
+    location.Y -= deltaTime * 200;
+    if (location.Y < -400) {
+        location.Y = 450;
+    }
     this->setPosition(location);
 }

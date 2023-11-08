@@ -2,7 +2,9 @@
 
 // Unreal includes
 #include "Components/BoxComponent.h"
+#include "Engine/EngineBaseTypes.h"
 #include "Materials/Material.h"
+#include "Math/UnrealMathUtility.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
 
@@ -58,35 +60,9 @@ AChartPawn::AChartPawn() : boxVisualMaterial{nullptr}, stringVisualMaterial{null
     this->visibleComponent->SetupAttachment(this->RootComponent);
 }
 
-AChartPawn::~AChartPawn() { this->clearNoteActions(); }
-
 void AChartPawn::BeginPlay() {
     Super::BeginPlay();
-
-    this->SetActorLocation(CHART_INITIAL_LOCATION);
-    float zJump = (CHART_SIZE.Z * 2) / (MAX_CHORDS + 1);
-    FVector defaultLocation{CHART_INITIAL_LOCATION.X * 0.9f, 500.f, CHART_INITIAL_LOCATION.Z + CHART_SIZE.Z - zJump};
-
-    // TODO: Move to notes class
-    // replace new operator to use in unreal
-    ANoteAction* noteAction1;
-    noteAction1 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
-    noteAction1->setChord(0);
-    noteAction1->setPosition(defaultLocation + FVector{0, 0, -zJump * noteAction1->getChord()});
-
-    ANoteAction* noteAction2;
-    noteAction2 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
-    noteAction2->setChord(1);
-    noteAction2->setPosition(defaultLocation + FVector{0, 100.f, -zJump * noteAction2->getChord()});
-
-    ANoteAction* noteAction3;
-    noteAction3 = GetWorld()->SpawnActor<ANoteAction>(ANoteAction::StaticClass());
-    noteAction3->setChord(2);
-    noteAction3->setPosition(defaultLocation + FVector{0, 350.f, -zJump * noteAction3->getChord()});
-
-    this->addNoteAction(noteAction1);
-    this->addNoteAction(noteAction2);
-    this->addNoteAction(noteAction3);
+    SetActorLocation(CHART_INITIAL_LOCATION);
 }
 
 void AChartPawn::Tick(float deltaTime) { Super::Tick(deltaTime); }
@@ -100,40 +76,43 @@ void AChartPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
     PlayerInputComponent->BindAction("HitSecondChord", IE_Pressed, this, &AChartPawn::hitSecondChord);
     PlayerInputComponent->BindAction("HitThirdChord", IE_Pressed, this, &AChartPawn::hitThirdChord);
     PlayerInputComponent->BindAction("HitFourthChord", IE_Pressed, this, &AChartPawn::hitFourthChord);
+
+    PlayerInputComponent->BindAction("Start", IE_Released, this, &AChartPawn::startGame);
 }
 
 void AChartPawn::hitChord(int8_t chord) {
-    ANoteAction* noteAction{*this->noteActions.begin()};
-    FVector location = noteAction->getPosition();
+    std::list<ANoteAction*>::iterator it{this->noteActions.begin()};
+    for (; it != this->noteActions.end(); ++it) {
+        if (*it != nullptr) {
+            FVector location = (*it)->getPosition();
+            UE_LOG(LogTemp, Warning, TEXT("HIT LOCATION %f"), location.Y);
+            UE_LOG(LogTemp, Warning, TEXT("HIT CHORD %d"), chord + 1);
+            if ((*it)->isHit(chord, location.Y)) {
+                // play note
+                (*it)->playNote();
 
-    UE_LOG(LogTemp, Warning, TEXT("HIT LOCATION %f"), location.Y);
-    UE_LOG(LogTemp, Warning, TEXT("HIT CHORD %d"), chord + 1);
+                // remove note from list
+                ANoteAction* noteAction = *it;
+                it = this->noteActions.erase(it);
 
-    // check if note is in hitbox
-    bool ret = noteAction->isHit(chord, location.Y);
+                // destroy note
+                noteAction->Destroy();
 
-    if (ret) {
-        // play note
-        this->playNoteAction();
-        // remove note from list
-        this->popNoteAction();
-        // destroy note
-        noteAction->Destroy();
+                UE_LOG(LogTemp, Log, TEXT("HIT CORRECT"));
 
-        UE_LOG(LogTemp, Log, TEXT("HIT CORRECT"));
-        return;
+                if (this->noteActions.empty()) {
+                    UE_LOG(LogTemp, Log, TEXT("END OF GAME"));
+                }
+                return;
+            } else
+                UE_LOG(LogTemp, Log, TEXT("HIT WRONG"));
+        }
     }
-    UE_LOG(LogTemp, Log, TEXT("HIT WRONG"));
-    return; // Necessary?
 }
 
-void AChartPawn::addNoteAction(ANoteAction* noteAction) {
-    noteActions.push_back(noteAction);
-}
+void AChartPawn::addNoteAction(ANoteAction* noteAction) { noteActions.push_back(noteAction); }
 
-void AChartPawn::removeNoteAction(ANoteAction* noteAction) {
-    noteActions.remove(noteAction);
-}
+void AChartPawn::removeNoteAction(ANoteAction* noteAction) { noteActions.remove(noteAction); }
 
 void AChartPawn::popNoteAction() { noteActions.pop_front(); }
 
@@ -214,15 +193,49 @@ void AChartPawn::createHitboxVisual(const void* const boxComponentPtr, const voi
 }
 
 void AChartPawn::clearNoteActions() {
-    //  this->noteActions.clear();
-}
-
-void AChartPawn::playNoteAction() {
-    // ANoteAction* noteAction(*this->noteActions.begin());
-    // noteAction->play();
+    for (ANoteAction* noteAction : this->noteActions) {
+        noteAction->Destroy();
+    }
+    this->noteActions.clear();
 }
 
 void AChartPawn::hitFirstChord() { this->hitChord(0); }
 void AChartPawn::hitSecondChord() { this->hitChord(1); }
 void AChartPawn::hitThirdChord() { this->hitChord(2); }
 void AChartPawn::hitFourthChord() { this->hitChord(3); }
+
+void AChartPawn::setupTestGame() {
+    float zJump = (CHART_SIZE.Z * 2) / (MAX_CHORDS + 1);
+    FVector defaultLocation{CHART_INITIAL_LOCATION.X * 0.9f, 200.f, CHART_INITIAL_LOCATION.Z + CHART_SIZE.Z - zJump};
+
+    // ANoteAction* noteAction1 = new ANoteAction(0, defaultLocation);
+    // replace new operator to use in unreal
+    ANoteAction* noteActionAux;
+    ANoteAction* noteActionAux2;
+    for (int32_t i{0}; i < 30; ++i) {
+        noteActionAux = GetWorld()->SpawnActor<ANoteAction>();
+        noteActionAux->setChord(FMath::RandRange(0, 3));
+        noteActionAux2 = this->noteActions.back();
+        float prevYLocation = 0.f;
+        float min = 0.f;
+        if (noteActionAux2 != nullptr) {
+            prevYLocation = noteActionAux2->getPosition().Y;
+            if (noteActionAux2->getChord() == noteActionAux->getChord()) {
+                min = 30.f;
+            }
+        }
+        float yLocation = prevYLocation + FMath::RandRange(min, 60.f);
+        float zLocation = -zJump * noteActionAux->getChord();
+        noteActionAux->setPosition(defaultLocation + FVector(0.f, yLocation, zLocation));
+        this->addNoteAction(noteActionAux);
+    }
+}
+
+void AChartPawn::startGame() {
+    this->clearNoteActions();
+    this->setupTestGame();
+    std::list<ANoteAction*>::const_iterator it{this->noteActions.begin()};
+    for (; it != this->noteActions.end(); ++it) {
+        (*it)->setCanMove(true);
+    }
+}

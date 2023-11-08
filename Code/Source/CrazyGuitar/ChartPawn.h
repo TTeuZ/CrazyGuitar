@@ -67,7 +67,9 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
 
     void hitFourthChord();
 
-    // Member Data
+    void setupTestGame();
+    void startGame();
+
     std::list<ANoteAction*> noteActions;
     int8_t noteSpeed;
 
@@ -75,13 +77,14 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     UMaterial* stringVisualMaterial;
     UMaterial* hitBoxVisualMaterial;
 
+    std::array<UStaticMeshComponent*, 4> staticMeshes;
+
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* boxVisual;
     UPROPERTY(EditAnywhere)
     USceneComponent* visibleComponent;
     UPROPERTY(EditAnywhere)
     UCameraComponent* chartCamera;
-    std::array<UStaticMeshComponent*, 4> staticMeshes;
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* hitBoxVisual;
 };
