@@ -33,8 +33,7 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false} {
     }
 }
 
-ANoteAction::ANoteAction(const uint8_t chord, const FVector position)
-    : ANoteAction() {
+ANoteAction::ANoteAction(const uint8_t chord, const FVector position) : ANoteAction() {
     this->chord = chord;
     this->setPosition(position);
 }
@@ -78,7 +77,7 @@ void ANoteAction::move(const float deltaTime) {
     if (!this->canMove)
         return;
 
-    FVector location = GetActorLocation();
+    FVector location = this->getPosition();
     location.Y -= deltaTime * 200;
     if (location.Y < -400) {
         location.Y = 450;
