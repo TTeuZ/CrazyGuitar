@@ -23,14 +23,14 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     GENERATED_BODY()
 
     static constexpr uint8_t MAX_CHORDS{4};
-    const FVector CHART_SIZE{10.f, 220.f, 60.f};
+    const FVector CHART_SIZE{10.f, 240.f, 60.f};
     const FVector CHART_SCALE{CHART_SIZE / 50.f};
     const FVector CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
-    const FVector CAMERA_INITIAL_LOCATION{-220.f, 0.f, -50.f};
+    const FVector CAMERA_INITIAL_LOCATION{-250.f, 0.f, -50.f};
 
    public:
     AChartPawn();
-    ~AChartPawn();
+    virtual ~AChartPawn() = default;
 
     virtual void Tick(float deltaTime) override;
 
@@ -60,6 +60,9 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     void hitThirdChord();
     void hitFourthChord();
 
+    void setupTestGame();
+    void startGame();
+
     std::list<ANoteAction*> noteActions;
     int8_t noteSpeed;
 
@@ -67,13 +70,14 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     UMaterial* stringVisualMaterial;
     UMaterial* hitBoxVisualMaterial;
 
+    std::array<UStaticMeshComponent*, 4> staticMeshes;
+
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* boxVisual;
     UPROPERTY(EditAnywhere)
     USceneComponent* visibleComponent;
     UPROPERTY(EditAnywhere)
     UCameraComponent* chartCamera;
-    std::array<UStaticMeshComponent*, 4> staticMeshes;
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* hitBoxVisual;
 };

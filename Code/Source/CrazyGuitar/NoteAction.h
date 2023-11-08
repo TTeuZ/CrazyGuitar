@@ -23,9 +23,13 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     FVector getPosition() const;
     void setPosition(const FVector position);
 
+    void setCanMove(const bool newCanMove);
+
     virtual void Tick(const float deltaTime) override;
 
     bool isHit(const uint8_t chordHited, const int32_t positionHited) const;
+
+    void playNote();
 
    protected:
     virtual void BeginPlay() override;
@@ -34,6 +38,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     void move(const float deltaTime);
 
     uint8_t chord;
+    bool canMove;
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* noteVisual;
