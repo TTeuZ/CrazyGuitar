@@ -12,21 +12,21 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
    public:
     ANoteAction();
 
-    ANoteAction(const uint8_t chord, const FVector position = FVector{0, 0, 0});
+    ANoteAction(uint8_t chord, const FVector position = FVector{0, 0, 0});
 
     virtual ~ANoteAction() = default;
 
     uint8_t getChord() const;
 
-    FVector getPosition() const;
+    const FVector getPosition() const;
 
-    void setChord(const uint8_t newChord);
+    void setChord(uint8_t newChord);
 
-    void setPosition(const FVector position);
+    void setPosition(const FVector& position);
 
-    virtual void Tick(const float deltaTime) override;
+    virtual void Tick(float deltaTime) override;
 
-    bool isHit(const uint8_t chordHited, const int32_t positionHited) const;
+    bool isHit(uint8_t chordHited, int32_t positionHited) const;
 
    protected:
     virtual void BeginPlay() override;
@@ -38,7 +38,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     constexpr static uint8_t HITBOX_END{HITBOX_START - HITBOX_SIZE};
     constexpr static uint8_t HITBOX_CENTER{HITBOX_START - (HITBOX_SIZE / 2)};
 
-    void move(const float deltaTime);
+    void move(float deltaTime);
 
     uint8_t chord;
     

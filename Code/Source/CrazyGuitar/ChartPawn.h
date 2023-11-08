@@ -31,13 +31,13 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
 
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-    void addNoteAction(ANoteAction* noteAction);
+    void addNoteAction(ANoteAction* noteAction); // TODO: Move to notes class (Necessary?)
 
-    void removeNoteAction(ANoteAction* noteAction);
+    void removeNoteAction(ANoteAction* noteAction); // TODO: Move to notes class (Necessary?)
 
-    void popNoteAction();
+    void popNoteAction(); // TODO: Move to notes class (Necessary?)
 
-    void hitChord(const int8_t chord);
+    void hitChord(int8_t chord); // TODO: Move to notes class ?
 
    protected:
     virtual void BeginPlay() override;
@@ -49,15 +49,15 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     const FVector CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
     const FVector CAMERA_INITIAL_LOCATION{-220.f, 0.f, -50.f};
 
-    void createBoxVisual(void* boxComponentPtr, FVector rootLocation, void* boxVisualAssetPtr);
+    void createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation, const void* const boxVisualAssetPtr);
 
-    void createStringVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr);
+    void createStringVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);
 
-    void createHitboxVisual(void* boxComponentPtr, void* cylinderVisualAssetPtr);
+    void createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);
 
-    void clearNoteActions();
+    void clearNoteActions(); // TODO: Move to notes class
 
-    void playNoteAction();
+    void playNoteAction(); // TODO: Move to notes class
 
     void hitFirstChord();
 
