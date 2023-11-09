@@ -16,16 +16,15 @@
 #include "Materials/Material.h"
 
 // Must be the last include
-#include "ChartPawn.generated.h"
+#include "Chart.generated.h"
 
 UCLASS()
-class CRAZYGUITAR_API AChartPawn : public APawn {
+class CRAZYGUITAR_API AChart : public APawn {
     GENERATED_BODY()
 
    public:
-    AChartPawn();
-
-    virtual ~AChartPawn() = default;
+    AChart();
+    virtual ~AChart() = default;
 
     virtual void Tick(float deltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -34,16 +33,18 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     void removeNoteAction(ANoteAction* noteAction); // TODO: Move to notes class (Necessary?)
     void popNoteAction(); // TODO: Move to notes class (Necessary?)
     void hitChord(int8_t chord); // TODO: Move to notes class ?
+    
+    static const FVector CHART_INITIAL_LOCATION;
+    static const FVector CHART_SIZE;
+    static const FVector CHART_SCALE;
+    static const FString CHART_NAME;
 
    protected:
     virtual void BeginPlay() override;
 
    private:
     constexpr static uint8_t MAX_CHORDS{4};
-    const FVector CHART_SIZE{10.f, 220.f, 60.f};
-    const FVector CHART_SCALE{CHART_SIZE / 50.f};
-    const FVector CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
-    const FVector CAMERA_INITIAL_LOCATION{-220.f, 0.f, -50.f};
+    static const FVector CAMERA_INITIAL_LOCATION;
 
     void createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation, const void* const boxVisualAssetPtr);
     void createStringVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);

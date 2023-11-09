@@ -1,8 +1,8 @@
 #include "CrazyGuitarGameModeBase.h"
 
 // Game Includes
-#include "ChartPawn.h"
+#include "Chart.h"
 
 ACrazyGuitarGameModeBase::ACrazyGuitarGameModeBase() {
-    this->DefaultPawnClass = AChartPawn::StaticClass();
+    this->DefaultPawnClass = AChart::StaticClass();
 }
