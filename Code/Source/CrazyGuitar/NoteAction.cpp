@@ -34,11 +34,6 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false} {
     }
 }
 
-ANoteAction::ANoteAction(const uint8_t chord, const FVector position) : ANoteAction() {
-    this->chord = chord;
-    this->setPosition(position);
-}
-
 uint8_t ANoteAction::getChord() const { return this->chord; }
 
 const FVector ANoteAction::getPosition() const { return this->GetActorLocation(); }
@@ -52,11 +47,6 @@ void ANoteAction::setChord(const uint8_t newChord) { this->chord = newChord; }
 void ANoteAction::setCanMove(const bool newCanMove) { this->canMove = newCanMove; }
 
 void ANoteAction::setPosition(const FVector& position) { this->SetActorLocation(position); }
-
-void ANoteAction::BeginPlay() {
-    Super::BeginPlay();
-    this->setPosition(FVector{0, 0, 500});
-}
 
 void ANoteAction::Tick(float deltaTime) {
     Super::Tick(deltaTime);
@@ -73,13 +63,17 @@ bool ANoteAction::isHit(const uint8_t& chordHited, const int32_t& positionHited)
 
 void ANoteAction::playNote() { UE_LOG(LogTemp, Warning, TEXT("Play note")); }
 
-void ANoteAction::move(const float deltaTime) {
+void ANoteAction::BeginPlay() {
+    Super::BeginPlay();
+    this->setPosition(FVector{0, 0, 500});
+}
+
+void ANoteAction::move(const float& deltaTime) {
     if (!this->canMove) return;
 
-    FVector location = this->getPosition();
+    FVector location{this->getPosition()};
     location.Y -= deltaTime * 200;
-    if (location.Y < -400) {
-        location.Y = 450;
-    }
+    if (location.Y < -400) location.Y = 450;
+
     this->setPosition(location);
 }

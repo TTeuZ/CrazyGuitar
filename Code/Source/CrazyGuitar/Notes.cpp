@@ -50,6 +50,7 @@ void Notes::createNotes(UWorld* const world) {
  * So, as the noteActions list holds AActors pointers, if we try to delete them here we get segmentation fault
  */
 void Notes::clearNoteActions() {
+    while (!this->noteActions.empty()) this->noteActions.pop_back();
     // while (!this->noteActions.empty()) {
     //     ANoteAction* aux = this->noteActions.back();
     //     if (!aux->IsPendingKill()) {

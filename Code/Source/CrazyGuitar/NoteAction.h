@@ -17,7 +17,6 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
    public:
     ANoteAction();
-    ANoteAction(const uint8_t chord, const FVector position = FVector{0, 0, 0});
 
     virtual ~ANoteAction() = default;
 
@@ -38,7 +37,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     virtual void BeginPlay() override;
 
    private:
-    void move(const float deltaTime);
+    void move(const float& deltaTime);
 
     uint8_t chord;
     bool canMove;
