@@ -9,7 +9,8 @@
 ANoteAction::ANoteAction() : chord{0}, canMove{false} {
     this->PrimaryActorTick.bCanEverTick = true;
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> noteVisualAsset{TEXT("/Game/Shapes/Shape_Sphere.Shape_Sphere")};
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> noteVisualAsset{
+        TEXT("/Game/Shapes/Shape_Sphere.Shape_Sphere")};
 
     USphereComponent* sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("NoteAction"));
     this->RootComponent = sphereComponent;
@@ -23,7 +24,7 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false} {
     sphereComponent->SetRelativeScale3D(noteScale);
 
     if (noteVisualAsset.Succeeded()) {
-        this->noteVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("NoteVisual")); // (Unreal do not allow to use {} in this constructor)
+        this->noteVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("NoteVisual"));
         this->noteVisual->SetStaticMesh(noteVisualAsset.Object);
         this->noteVisual->SetRelativeLocation(FVector{0, 0, -sphereRadius / 2});
         this->noteVisual->SetRelativeScale3D(noteScale * 0.8f);
@@ -43,14 +44,14 @@ uint8_t ANoteAction::getChord() const { return this->chord; }
 const FVector ANoteAction::getPosition() const { return this->GetActorLocation(); }
 
 /*
-*   Unreal Engine enforce us to use the name newChord instead of chord, otherwise
-*   we received a compilation error
-*/
-void ANoteAction::setChord(uint8_t newChord) { this->chord = newChord; }
-
-void ANoteAction::setPosition(const FVector& position) { this->SetActorLocation(position); }
+ *   Unreal Engine enforce us to use the name newChord instead of chord, otherwise
+ *   we received a compilation error
+ */
+void ANoteAction::setChord(const uint8_t newChord) { this->chord = newChord; }
 
 void ANoteAction::setCanMove(const bool newCanMove) { this->canMove = newCanMove; }
+
+void ANoteAction::setPosition(const FVector& position) { this->SetActorLocation(position); }
 
 void ANoteAction::BeginPlay() {
     Super::BeginPlay();
@@ -62,20 +63,18 @@ void ANoteAction::Tick(float deltaTime) {
     this->move(deltaTime);
 }
 
-bool ANoteAction::isHit(uint8_t chordHited, int32_t positionHited) const {
+bool ANoteAction::isHit(const uint8_t& chordHited, const int32_t& positionHited) const {
     UE_LOG(LogTemp, Warning, TEXT("Chord: %d, Position: %d"), chordHited, positionHited);
-    UE_LOG(LogTemp, Warning, TEXT("Hitbox start: %d, Hitbox end: %d"), HITBOX_START, HITBOX_END);
+    UE_LOG(LogTemp, Warning, TEXT("Hitbox start: %d, Hitbox end: %d"), Constants::HITBOX_START, Constants::HITBOX_END);
 
-    return this->chord == chordHited && positionHited > -HITBOX_START && positionHited < -HITBOX_END;
+    return this->chord == chordHited && positionHited > -Constants::HITBOX_START &&
+           positionHited < -Constants::HITBOX_END;
 }
 
-void ANoteAction::playNote() {
-    UE_LOG(LogTemp, Warning, TEXT("Play note"));
-}
+void ANoteAction::playNote() { UE_LOG(LogTemp, Warning, TEXT("Play note")); }
 
 void ANoteAction::move(const float deltaTime) {
-    if (!this->canMove)
-        return;
+    if (!this->canMove) return;
 
     FVector location = this->getPosition();
     location.Y -= deltaTime * 200;
