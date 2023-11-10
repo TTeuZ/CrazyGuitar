@@ -1,12 +1,15 @@
 #include "NoteAction.h"
 
+// Personal Includes
+#include "Notes.h"
+
 // Unreal Includes
 #include "Materials/Material.h"
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
 #include "Components/SphereComponent.h"
 
-ANoteAction::ANoteAction() : chord{0}, canMove{false} {
+ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> noteVisualAsset{
@@ -46,6 +49,11 @@ void ANoteAction::setChord(const uint8_t newChord) { this->chord = newChord; }
 
 void ANoteAction::setCanMove(const bool newCanMove) { this->canMove = newCanMove; }
 
+void ANoteAction::setNotes(Notes* const newNotes) {
+    newNotes->noteActions.push_back(this);
+    this->notes = newNotes;
+}
+
 void ANoteAction::setPosition(const FVector& position) { this->SetActorLocation(position); }
 
 void ANoteAction::Tick(float deltaTime) {
@@ -73,7 +81,7 @@ void ANoteAction::move(const float& deltaTime) {
 
     FVector location{this->getPosition()};
     location.Y -= deltaTime * 200;
-    if (location.Y < -400) location.Y = 450;
-
     this->setPosition(location);
+
+    if (location.Y < -400) this->notes->removeNote(this);
 }

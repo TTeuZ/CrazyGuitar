@@ -22,6 +22,11 @@ void Notes::handleHit(const int8_t& chord) {
     }
 }
 
+void Notes::removeNote(ANoteAction* const note) {
+    this->noteActions.remove(note);
+    note->Destroy();
+}
+
 void Notes::createNotes(UWorld* const world) {
     ANoteAction* aux{nullptr};
     ANoteAction* aux2{nullptr};
@@ -41,7 +46,7 @@ void Notes::createNotes(UWorld* const world) {
         float yLocation = prevYLocation + FMath::RandRange(min, 60.f);
         float zLocation = -Constants::ZJUMP * aux->getChord();
         aux->setPosition(Constants::DEFAULT_NOTE_LOCATION + FVector(0.f, yLocation, zLocation));
-        this->noteActions.push_back(aux);
+        aux->setNotes(this);
     }
 }
 

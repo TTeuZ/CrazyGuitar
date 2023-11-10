@@ -11,6 +11,8 @@
 // Must be the last include
 #include "NoteAction.generated.h"
 
+class Notes;
+
 UCLASS()
 class CRAZYGUITAR_API ANoteAction : public AActor {
     GENERATED_BODY()
@@ -25,6 +27,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
     void setChord(const uint8_t newChord);
     void setCanMove(const bool newCanMove);
+    void setNotes(Notes* const newNotes);
     void setPosition(const FVector& position);
 
     virtual void Tick(float deltaTime) override;
@@ -41,6 +44,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
     uint8_t chord;
     bool canMove;
+    Notes* notes;
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* noteVisual;
