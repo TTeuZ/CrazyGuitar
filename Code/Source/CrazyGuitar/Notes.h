@@ -9,7 +9,7 @@
 // Unreal Includes
 #include "Engine/World.h"
 
-class Notes {
+class CRAZYGUITAR_API Notes {
     friend void ANoteAction::setNotes(Notes* const newNotes);
 
    public:
