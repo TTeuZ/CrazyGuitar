@@ -63,10 +63,9 @@ void ANoteAction::Tick(float deltaTime) {
 
 bool ANoteAction::isHit(const uint8_t& chordHited, const int32_t& positionHited) const {
     UE_LOG(LogTemp, Warning, TEXT("Chord: %d, Position: %d"), chordHited, positionHited);
-    UE_LOG(LogTemp, Warning, TEXT("Hitbox start: %d, Hitbox end: %d"), Constants::HITBOX_START, Constants::HITBOX_END);
+    UE_LOG(LogTemp, Warning, TEXT("Hitbox start: %d, Hitbox end: %d"), HITBOX_START, HITBOX_END);
 
-    return this->chord == chordHited && positionHited > -Constants::HITBOX_START &&
-           positionHited < -Constants::HITBOX_END;
+    return this->chord == chordHited && positionHited > -HITBOX_START && positionHited < -HITBOX_END;
 }
 
 void ANoteAction::playNote() { UE_LOG(LogTemp, Warning, TEXT("Play note")); }

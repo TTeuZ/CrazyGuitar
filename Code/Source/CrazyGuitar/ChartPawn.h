@@ -7,14 +7,15 @@
 #include <string>
 
 // Personal includes
-#include "Constants.h"
 #include "Notes.h"
 
 // Unreal includes
-#include "Camera/CameraComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Materials/Material.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 
 // Must be the last include
 #include "ChartPawn.generated.h"
@@ -24,6 +25,10 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     GENERATED_BODY()
 
    public:
+    constexpr static uint8_t MAX_CHORDS{4};
+    const static FVector CHART_INITIAL_LOCATION;
+    const static FVector CHART_SIZE;
+
     AChartPawn();
     virtual ~AChartPawn();
 
@@ -37,10 +42,15 @@ class CRAZYGUITAR_API AChartPawn : public APawn {
     virtual void BeginPlay() override;
 
    private:
-    void createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation,
-                         const void* const boxVisualAssetPtr);
-    void createStringVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);
-    void createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);
+    const static FVector CHART_SCALE;
+    const static FVector CAMERA_INITIAL_LOCATION;
+
+    void createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
+                         const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset);
+    void createStringVisual(UBoxComponent* const boxComponent,
+                            const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset);
+    void createHitboxVisual(UBoxComponent* const boxComponent,
+                            const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset);
 
     void hitFirstChord();
     void hitSecondChord();

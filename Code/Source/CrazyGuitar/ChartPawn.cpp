@@ -1,12 +1,15 @@
 #include "ChartPawn.h"
 
 // Unreal includes
-#include "Components/BoxComponent.h"
 #include "Engine/EngineBaseTypes.h"
 #include "Materials/Material.h"
 #include "Math/UnrealMathUtility.h"
-#include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
+
+const FVector AChartPawn::CHART_SIZE{10.f, 220.f, 60.f};
+const FVector AChartPawn::CHART_SCALE{CHART_SIZE / 50.f};
+const FVector AChartPawn::CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
+const FVector AChartPawn::CAMERA_INITIAL_LOCATION{-220.f, 0.f, -50.f};
 
 AChartPawn::AChartPawn()
     : notes{new Notes{}},
@@ -51,12 +54,12 @@ AChartPawn::AChartPawn()
     this->RootComponent = boxComponent;
 
     // Creating the visual items for the game
-    this->createBoxVisual(boxComponent, rootLocation, &boxVisualAsset);
-    this->createStringVisual(boxComponent, &cylinderVisualAsset);
-    this->createHitboxVisual(boxComponent, &cylinderVisualAsset);
+    this->createBoxVisual(boxComponent, rootLocation, boxVisualAsset);
+    this->createStringVisual(boxComponent, cylinderVisualAsset);
+    this->createHitboxVisual(boxComponent, cylinderVisualAsset);
 
     // Creating the camera
-    FVector cameraLocation{Constants::CAMERA_INITIAL_LOCATION};
+    FVector cameraLocation{AChartPawn::CAMERA_INITIAL_LOCATION};
     this->chartCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     this->chartCamera->SetRelativeLocation(cameraLocation);
     this->chartCamera->SetupAttachment(this->RootComponent);
@@ -89,20 +92,15 @@ void AChartPawn::hitChord(const int8_t& chord) { this->notes->handleHit(chord); 
 
 void AChartPawn::BeginPlay() {
     Super::BeginPlay();
-    this->SetActorLocation(Constants::CHART_INITIAL_LOCATION);
+    this->SetActorLocation(AChartPawn::CHART_INITIAL_LOCATION);
 }
 
-void AChartPawn::createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation,
-                                 const void* const boxVisualAssetPtr) {
-    FVector boxVisualScale{Constants::CHART_SCALE};
-
-    // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)boxVisualAssetPtr);
-    UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
+void AChartPawn::createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
+                                 const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset) {
+    FVector boxVisualScale{AChartPawn::CHART_SCALE};
 
     boxComponent->SetRelativeLocation(rootLocation);
-    boxComponent->SetBoxExtent(Constants::CHART_SIZE, true);
+    boxComponent->SetBoxExtent(CHART_SIZE, true);
 
     // defining colision profile
     boxComponent->SetCollisionProfileName(TEXT("Pawn"));
@@ -113,7 +111,7 @@ void AChartPawn::createBoxVisual(const void* const boxComponentPtr, const FVecto
     boxVisual->SetupAttachment(boxComponent);
     if (boxVisualAsset.Succeeded()) {
         boxVisual->SetStaticMesh(boxVisualAsset.Object);
-        boxVisual->SetRelativeLocation(FVector{0.0f, 0.0f, -Constants::CHART_SIZE.Z});
+        boxVisual->SetRelativeLocation(FVector{0.0f, 0.0f, -CHART_SIZE.Z});
         // fit the box to the root component size
         boxVisual->SetWorldScale3D(boxVisualScale);
         boxVisual->SetMaterial(0, this->boxVisualMaterial);
@@ -121,12 +119,8 @@ void AChartPawn::createBoxVisual(const void* const boxComponentPtr, const FVecto
     }
 }
 
-void AChartPawn::createStringVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr) {
-    // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
-    UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
-
+void AChartPawn::createStringVisual(UBoxComponent* const boxComponent,
+                                    const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset) {
     if (!cylinderVisualAsset.Succeeded()) {
         UE_LOG(LogTemp, Warning, TEXT("Cannot create without mesh component"));
         return;
@@ -135,9 +129,9 @@ void AChartPawn::createStringVisual(const void* const boxComponentPtr, const voi
     // Create 4 cylinders componenets to represent the chart strings
     std::array<UStaticMeshComponent*, 4>::iterator it{this->staticMeshes.begin()};
     for (size_t i{0}; it != this->staticMeshes.end(); ++i, ++it) {
-        FVector stringBoxScale{0.02f, 0.02f, Constants::CHART_SCALE.Y};
-        FVector stringLocation{-10.f, Constants::CHART_SIZE.Y, Constants::CHART_SIZE.Z};
-        stringLocation.Z -= ((Constants::CHART_SIZE.Z * 2) / (Constants::MAX_CHORDS + 1)) * (i + 1);
+        FVector stringBoxScale{0.02f, 0.02f, CHART_SCALE.Y};
+        FVector stringLocation{-10.f, CHART_SIZE.Y, CHART_SIZE.Z};
+        stringLocation.Z -= ((CHART_SIZE.Z * 2) / (MAX_CHORDS + 1)) * (i + 1);
 
         FRotator stringRotation{0.f, 0.f, 270.0f};
         FString stringName = FString::Printf(TEXT("String%d"), i);
@@ -152,15 +146,11 @@ void AChartPawn::createStringVisual(const void* const boxComponentPtr, const voi
     }
 }
 
-void AChartPawn::createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr) {
-    // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
-    UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
-
+void AChartPawn::createHitboxVisual(UBoxComponent* const boxComponent,
+                                    const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset) {
     if (cylinderVisualAsset.Succeeded()) {
-        FVector hitBoxBoxScale{0.2f, 0.2f, Constants::CHART_SCALE.Z * 1.05f};
-        FVector hitBoxLocation{-10.f, -154.f, -Constants::CHART_SIZE.Z * 1.05f};
+        FVector hitBoxBoxScale{0.2f, 0.2f, CHART_SCALE.Z * 1.05f};
+        FVector hitBoxLocation{-10.f, -154.f, -CHART_SIZE.Z * 1.05f};
         FString hitBoxName = FString::Printf(TEXT("HitBox"));
 
         this->hitBoxVisual = CreateDefaultSubobject<UStaticMeshComponent>(*hitBoxName);

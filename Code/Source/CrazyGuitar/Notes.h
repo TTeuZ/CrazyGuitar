@@ -4,7 +4,6 @@
 #include <list>
 
 // Personal includes
-#include "Constants.h"
 #include "NoteAction.h"
 
 // Unreal Includes
@@ -29,6 +28,9 @@ class Notes {
     void clearNoteActions();
 
    private:
+    const static float ZJUMP;
+    const static FVector DEFAULT_NOTE_LOCATION;
+
     std::list<ANoteAction*> noteActions;
     uint8_t noteSpeed;
 };
