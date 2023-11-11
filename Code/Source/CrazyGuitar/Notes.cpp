@@ -4,8 +4,9 @@
 #include "ChartPawn.h"
 
 const float Notes::ZJUMP{(AChartPawn::CHART_SIZE.Z * 2) / (AChartPawn::MAX_CHORDS + 1)};
-const FVector Notes::DEFAULT_NOTE_LOCATION{AChartPawn::CHART_INITIAL_LOCATION.X * 0.9f, 200.f,
-                                           AChartPawn::CHART_INITIAL_LOCATION.Z + AChartPawn::CHART_SIZE.Z - ZJUMP};
+const FVector Notes::DEFAULT_NOTE_LOCATION{
+    AChartPawn::CHART_INITIAL_LOCATION.X * 0.9f, 200.f,
+    AChartPawn::CHART_INITIAL_LOCATION.Z + AChartPawn::CHART_SIZE.Z - Notes::ZJUMP};
 
 Notes::Notes() : noteSpeed{1} {}
 
@@ -51,8 +52,8 @@ void Notes::createNotes(UWorld* const world) {
         }
 
         float yLocation = prevYLocation + FMath::RandRange(min, 60.f);
-        float zLocation = -ZJUMP * aux->getChord();
-        aux->setPosition(DEFAULT_NOTE_LOCATION + FVector(0.f, yLocation, zLocation));
+        float zLocation = -Notes::ZJUMP * aux->getChord();
+        aux->setPosition(Notes::DEFAULT_NOTE_LOCATION + FVector(0.f, yLocation, zLocation));
         aux->setNotes(this);
     }
 }
