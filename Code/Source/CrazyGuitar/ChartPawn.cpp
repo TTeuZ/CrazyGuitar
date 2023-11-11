@@ -105,8 +105,7 @@ void AChartPawn::createBoxVisual(UBoxComponent* const boxComponent, const FVecto
     // defining colision profile
     boxComponent->SetCollisionProfileName(TEXT("Pawn"));
 
-    // Cria e posiciona um componente de malha (MeshComponent) (Unreal do not
-    // allow to use {} in this constructor)
+    // Cria e posiciona um componente de malha (MeshComponent)
     this->boxVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualRepresentation"));
     boxVisual->SetupAttachment(boxComponent);
     if (boxVisualAsset.Succeeded()) {

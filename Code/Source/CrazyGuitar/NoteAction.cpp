@@ -41,10 +41,6 @@ uint8_t ANoteAction::getChord() const { return this->chord; }
 
 const FVector ANoteAction::getPosition() const { return this->GetActorLocation(); }
 
-/*
- *   Unreal Engine enforce us to use the name newChord instead of chord, otherwise
- *   we received a compilation error
- */
 void ANoteAction::setChord(const uint8_t newChord) { this->chord = newChord; }
 
 void ANoteAction::setCanMove(const bool newCanMove) { this->canMove = newCanMove; }
@@ -62,10 +58,6 @@ void ANoteAction::Tick(float deltaTime) {
 }
 
 bool ANoteAction::isHit(const uint8_t& chordHited, const int32_t& positionHited) const {
-    UE_LOG(LogTemp, Warning, TEXT("Chord: %d, Position: %d"), chordHited, positionHited);
-    UE_LOG(LogTemp, Warning, TEXT("Hitbox start: %d, Hitbox end: %d"), ANoteAction::HITBOX_START,
-           ANoteAction::HITBOX_END);
-
     return this->chord == chordHited && positionHited > -ANoteAction::HITBOX_START &&
            positionHited < -ANoteAction::HITBOX_END;
 }

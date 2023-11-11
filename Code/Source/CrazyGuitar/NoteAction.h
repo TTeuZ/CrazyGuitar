@@ -16,12 +16,15 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
    public:
     ANoteAction();
-
     virtual ~ANoteAction() = default;
 
     uint8_t getChord() const;
     const FVector getPosition() const;
 
+    /*
+     *   Unreal Engine enforce us to use the name newChord instead of chord, otherwise
+     *   we received a compilation error
+     */
     void setChord(const uint8_t newChord);
     void setCanMove(const bool newCanMove);
     void setNotes(Notes* const newNotes);
