@@ -35,9 +35,9 @@ class CRAZYGUITAR_API AChart : public APawn {
     AChart();
     virtual ~AChart();
 
-    virtual void Tick(float deltaTime) override;
+    void startGame();
 
-    virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    virtual void Tick(float deltaTime) override;
 
     void hitChord(const int8_t& chord);
 
@@ -52,13 +52,6 @@ class CRAZYGUITAR_API AChart : public APawn {
     void createHitboxVisual(UBoxComponent* const boxComponent,
                             const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset);
     void createChords();
-
-    void hitFirstChord();
-    void hitSecondChord();
-    void hitThirdChord();
-    void hitFourthChord();
-
-    void startGame();
 
     std::array<AChord*, 4> chords;
     Notes* notes;

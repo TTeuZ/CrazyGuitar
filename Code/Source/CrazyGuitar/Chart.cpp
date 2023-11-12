@@ -72,20 +72,13 @@ AChart::AChart()
 
 AChart::~AChart() { delete this->notes; }
 
-void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
-
-void AChart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
-    Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-    if (!PlayerInputComponent) return;
-
-    PlayerInputComponent->BindAction("HitFirstChord", IE_Pressed, this, &AChart::hitFirstChord);
-    PlayerInputComponent->BindAction("HitSecondChord", IE_Pressed, this, &AChart::hitSecondChord);
-    PlayerInputComponent->BindAction("HitThirdChord", IE_Pressed, this, &AChart::hitThirdChord);
-    PlayerInputComponent->BindAction("HitFourthChord", IE_Pressed, this, &AChart::hitFourthChord);
-
-    PlayerInputComponent->BindAction("Start", IE_Released, this, &AChart::startGame);
+void AChart::startGame() {
+    this->notes->clearNoteActions();
+    this->notes->createNotes(this->GetWorld());
+    this->notes->startNotes();
 }
+
+void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
 
 void AChart::hitChord(const int8_t& chord) { this->notes->handleHit(chord); }
 
@@ -97,7 +90,7 @@ void AChart::BeginPlay() {
 }
 
 void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
-                                 const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset) {
+                             const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset) {
     FVector boxVisualScale{AChart::CHART_SCALE};
 
     boxComponent->SetRelativeLocation(rootLocation);
@@ -120,7 +113,7 @@ void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& r
 }
 
 void AChart::createHitboxVisual(UBoxComponent* const boxComponent,
-                                    const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset) {
+                                const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset) {
     if (cylinderVisualAsset.Succeeded()) {
         FVector hitBoxBoxScale{0.2f, 0.2f, CHART_SCALE.Z * 1.05f};
         FVector hitBoxLocation{-10.f, -154.f, -CHART_SIZE.Z * 1.05f};
@@ -153,15 +146,4 @@ void AChart::createChords() {
     }
 
     UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chords created"));
-}
-
-void AChart::hitFirstChord() { this->hitChord(0); }
-void AChart::hitSecondChord() { this->hitChord(1); }
-void AChart::hitThirdChord() { this->hitChord(2); }
-void AChart::hitFourthChord() { this->hitChord(3); }
-
-void AChart::startGame() {
-    this->notes->clearNoteActions();
-    this->notes->createNotes(this->GetWorld());
-    this->notes->startNotes();
 }
