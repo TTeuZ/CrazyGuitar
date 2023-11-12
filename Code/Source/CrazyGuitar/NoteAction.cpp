@@ -18,7 +18,7 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
     USphereComponent* sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("NoteAction"));
     this->RootComponent = sphereComponent;
 
-    FVector noteScale{FVector{0.2f, 1.f, 1.f} / 2.f};
+    FVector noteScale{FVector{1.f, 1.f, 1.f} / 2.f};
     float sphereRadius = 50.f;
 
     sphereComponent->InitSphereRadius(sphereRadius);
