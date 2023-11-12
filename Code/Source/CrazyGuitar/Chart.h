@@ -28,7 +28,7 @@ class CRAZYGUITAR_API AChart : public APawn {
    public:
     constexpr static uint8_t MAX_CHORDS{4};
     const static FVector CHART_LOCATION;
-    const static FVector CHART_ROTATION;
+    const static FRotator CHART_ROTATION;
     const static FVector CHART_SIZE;
     const static FVector CHART_SCALE;
     const static FString CHART_NAME;
@@ -46,7 +46,8 @@ class CRAZYGUITAR_API AChart : public APawn {
     virtual void BeginPlay() override;
 
    private:
-    const static FVector CAMERA_INITIAL_LOCATION;
+    const static FVector CAMERA_LOCATION;
+    const static FRotator CAMERA_ROTATION;
 
     void createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
                          const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset);
@@ -63,8 +64,6 @@ class CRAZYGUITAR_API AChart : public APawn {
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* boxVisual;
-    UPROPERTY(EditAnywhere)
-    USceneComponent* visibleComponent;
     UPROPERTY(EditAnywhere)
     UCameraComponent* chartCamera;
     UPROPERTY(EditAnywhere)

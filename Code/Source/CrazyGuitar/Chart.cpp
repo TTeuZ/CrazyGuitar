@@ -8,10 +8,12 @@
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Object.h"
 
-const FVector AChart::CHART_SIZE{10.f, 300.f, 60.f};
+const FVector AChart::CHART_SIZE{5.f, 300.f, 60.f};
 const FVector AChart::CHART_SCALE{CHART_SIZE / 50.f};
-const FVector AChart::CHART_LOCATION{200.f, 0.f, 250.f};
-const FVector AChart::CAMERA_INITIAL_LOCATION{-AChart::CHART_SIZE.Y, 0.f, -AChart::CHART_SIZE.Z};
+const FVector AChart::CHART_LOCATION{0.f, 0.f, 100.f};
+const FRotator AChart::CHART_ROTATION{270.f, 0.f, 270.f};
+const FVector AChart::CAMERA_LOCATION{-60.f, -AChart::CHART_SIZE.Y, 0.f};
+const FRotator AChart::CAMERA_ROTATION{0.f, 85.f, 90.f};
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
 AChart::AChart()
@@ -21,7 +23,6 @@ AChart::AChart()
       stringVisualMaterial{nullptr},
       hitBoxVisualMaterial{nullptr},
       boxVisual{nullptr},
-      visibleComponent{nullptr},
       chartCamera{nullptr},
       hitBoxVisual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
@@ -58,16 +59,15 @@ AChart::AChart()
     this->createHitboxVisual(boxComponent, cylinderVisualAsset);
 
     // Creating the camera
-    FVector cameraLocation{CAMERA_INITIAL_LOCATION};
     this->chartCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-    this->chartCamera->SetRelativeLocation(cameraLocation);
+    this->chartCamera->SetRelativeLocation(AChart::CAMERA_LOCATION);
+    this->chartCamera->SetWorldRotation(AChart::CAMERA_ROTATION);
     this->chartCamera->SetupAttachment(this->RootComponent);
+
+    this->RootComponent->SetRelativeRotation(AChart::CHART_ROTATION);
 
     // Define player controller
     this->AutoPossessPlayer = EAutoReceiveInput::Player0;
-
-    this->visibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleComponent"));
-    this->visibleComponent->SetupAttachment(this->RootComponent);
 }
 
 AChart::~AChart() { delete this->notes; }
@@ -78,7 +78,9 @@ void AChart::startGame() {
     this->notes->startNotes();
 }
 
-void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
+void AChart::Tick(float deltaTime) { 
+    Super::Tick(deltaTime); 
+}
 
 void AChart::hitChord(const int8_t& chord) { this->notes->handleHit(chord); }
 
@@ -91,10 +93,11 @@ void AChart::BeginPlay() {
 
 void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
                              const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset) {
-    FVector boxVisualScale{AChart::CHART_SCALE};
+    float visualMultiplier{3.f};
+    FVector boxVisualScale{AChart::CHART_SCALE * FVector{1.f, visualMultiplier, 1.f}};
 
     boxComponent->SetRelativeLocation(rootLocation);
-    boxComponent->SetBoxExtent(CHART_SIZE, true);
+    boxComponent->SetBoxExtent(AChart::CHART_SIZE, true);
 
     // defining colision profile
     boxComponent->SetCollisionProfileName(TEXT("Pawn"));
@@ -104,7 +107,7 @@ void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& r
     boxVisual->SetupAttachment(boxComponent);
     if (boxVisualAsset.Succeeded()) {
         boxVisual->SetStaticMesh(boxVisualAsset.Object);
-        boxVisual->SetRelativeLocation(FVector{0.0f, 0.0f, -CHART_SIZE.Z});
+        boxVisual->SetRelativeLocation(FVector{0.0f, AChart::CHART_SIZE.Y * (visualMultiplier-1), -AChart::CHART_SIZE.Z});
         // fit the box to the root component size
         boxVisual->SetWorldScale3D(boxVisualScale);
         boxVisual->SetMaterial(0, this->boxVisualMaterial);
