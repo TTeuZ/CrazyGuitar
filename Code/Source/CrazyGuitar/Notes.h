@@ -14,11 +14,16 @@ class CRAZYGUITAR_API Notes {
 
    public:
     Notes();
-    virtual ~Notes();
+
+    /**
+     * The Unreal Engine cleans up all the actors in game when the game is destroyed
+     * So, as the noteActions list holds AActors pointers, if we try to delete them here we get segmentation fault
+     */
+    virtual ~Notes() = default;
 
     void startNotes();
 
-    void handleHit(const int8_t& chord);
+    bool handleHit(const int8_t& chord);
 
     void removeNote(ANoteAction* const note);
 
