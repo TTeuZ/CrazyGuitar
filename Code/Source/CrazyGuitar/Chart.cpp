@@ -8,10 +8,10 @@
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Object.h"
 
-const FVector AChart::CHART_SIZE{10.f, 300.f, 60.f};
+const FVector AChart::CHART_SIZE{5.f, 600.f, 60.f};
 const FVector AChart::CHART_SCALE{CHART_SIZE / 50.f};
 const FVector AChart::CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
-const FVector AChart::CAMERA_INITIAL_LOCATION{-AChart::CHART_SIZE.Y, 0.f, -AChart::CHART_SIZE.Z};
+const FVector AChart::CAMERA_INITIAL_LOCATION{-AChart::CHART_SIZE.Y / 2, -AChart::CHART_SIZE.Y / 2, -AChart::CHART_SIZE.Z};
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
 AChart::AChart()
@@ -139,16 +139,15 @@ void AChart::createHitboxVisual(UBoxComponent* const boxComponent,
 void AChart::createChords() {
     AChord* chord;
     FActorSpawnParameters spawnParams;
-    FString chordName[4]{TEXT("Chord1"), TEXT("Chord2"), TEXT("Chord3"), TEXT("Chord4")};
-    spawnParams.Owner = this;
+
+    USceneComponent *chordRoot = this->RootComponent;
 
     std::array<AChord*, 4>::iterator it{this->chords.begin()};
     for (uint8_t i{1}; it != this->chords.end(); ++it, ++i) {
-        spawnParams.Name = *chordName[i - 1];
-
         (*it) = this->GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_INITIAL_LOCATION,
-                                                     FRotator{0.f, 0.f, 0.f}, FActorSpawnParameters{spawnParams});
+                                                     FRotator{0.f, 0.f, 0.f}, spawnParams);
         (*it)->setIndex(i - 1);
+        (*it)->AttachToComponent(chordRoot, FAttachmentTransformRules::KeepRelativeTransform);
         UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord %d created"), i);
     }
 

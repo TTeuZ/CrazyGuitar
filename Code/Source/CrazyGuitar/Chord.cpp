@@ -55,7 +55,7 @@ void AChord::setIndex(const short int newIndex) {
     this->position = CHORD_POS_JUMP * this->index;
     FVector newLocation{AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position}};
     UE_LOG(LogTemp, Log, TEXT("AChord::setIndex: New location: %s"), *newLocation.ToString());
-    this->SetActorLocation(AChart::CHART_INITIAL_LOCATION + newLocation);
+    this->SetActorLocation(newLocation);
 }
 
 float AChord::getPosition() const { return this->position; }
