@@ -3,16 +3,16 @@
 #include "Chart.h"
 
 const FVector AChord::CHORD_BASE_POSITION{
-    FVector{-10.0f, -AChart::CHART_SIZE.Y, AChart::CHART_SIZE.Z *AChord::CHORDS_SPACE_PERCENT_IN_CHART}};
+    FVector{-10.0f, -AChart::CHART_SIZE.Y * 0.75f, AChart::CHART_SIZE.Z* AChart::CHORDS_SPACE_PERCENT_IN_CHART}};
 const FVector AChord::CHORD_INITIAL_LOCATION{AChart::CHART_LOCATION + AChord::CHORD_BASE_POSITION};
 const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M_Metal_Burnished_Steel")};
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
-const FVector AChord::CHORD_SCALE{FVector{0.02f, 0.02f, AChart::CHART_SCALE.Y}};
+const FVector AChord::CHORD_SCALE{FVector{0.01f, 0.01f, AChart::CHART_SCALE.Y}};
 const FVector AChord::CHORD_SIZE{AChord::CHORD_SCALE * 50.f};
 
-static const float CHORD_POS_JUMP{AChord::CHORD_BASE_POSITION.Z / 1.5f};
+static const float CHORD_POS_JUMP{AChart::CHART_SIZE.Z * 2 / AChart::MAX_CHORDS};
 
-AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, material{nullptr}, visual{nullptr} {
+AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, hitbox{nullptr}, material{nullptr}, visual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = false;
 
     this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
@@ -45,7 +45,9 @@ AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, material{nullptr}, v
     UE_LOG(LogTemp, Log, TEXT("AChord::AChord: Chord created"));
 }
 
-void AChord::BeginPlay() { Super::BeginPlay(); 
+void AChord::BeginPlay() { 
+    Super::BeginPlay(); 
+    this->createHitbox();
 }
 
 int AChord::getIndex() const { return this->index; }
@@ -59,3 +61,8 @@ void AChord::setIndex(const short int newIndex) {
 }
 
 float AChord::getPosition() const { return this->position; }
+
+void AChord::createHitbox() {
+    this->hitbox = GetWorld()->SpawnActor<AHitbox>(AHitbox::StaticClass());
+    this->hitbox->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+}

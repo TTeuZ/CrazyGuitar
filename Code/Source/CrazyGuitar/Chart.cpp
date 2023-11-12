@@ -3,17 +3,19 @@
 #include "Chord.h"
 
 // Unreal includes
+#include "Components/SceneComponent.h"
+#include "CrazyGuitar/Hitbox.h"
 #include "Engine/EngineBaseTypes.h"
 #include "Materials/Material.h"
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Object.h"
 
-const FVector AChart::CHART_SIZE{5.f, 300.f, 60.f};
+const FVector AChart::CHART_SIZE{5.f, 300.f, 80.f};
 const FVector AChart::CHART_SCALE{CHART_SIZE / 50.f};
 const FVector AChart::CHART_LOCATION{0.f, 0.f, 100.f};
 const FRotator AChart::CHART_ROTATION{270.f, 0.f, 270.f};
-const FVector AChart::CAMERA_LOCATION{-60.f, -AChart::CHART_SIZE.Y, 0.f};
-const FRotator AChart::CAMERA_ROTATION{0.f, 85.f, 90.f};
+const FVector AChart::CAMERA_LOCATION{-100.f, -AChart::CHART_SIZE.Y, 0.f};
+const FRotator AChart::CAMERA_ROTATION{0.f, 65.f, 90.f};
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
 AChart::AChart()
@@ -72,6 +74,17 @@ AChart::AChart()
 
 AChart::~AChart() { delete this->notes; }
 
+std::array<AChord*, AChart::MAX_CHORDS> AChart::getChords() const { return this->chords; }
+
+std::array<float, AChart::MAX_CHORDS> AChart::getChordsPositions() const {
+    std::array<float, AChart::MAX_CHORDS> positions;
+    std::array<AChord*, AChart::MAX_CHORDS>::const_iterator it{this->chords.begin()};
+    for (uint8_t i{0}; it != this->chords.end(); ++it, ++i) {
+        positions[i] = (*it)->getPosition();
+    }
+    return positions;
+}
+
 void AChart::startGame() {
     this->notes->clearNoteActions();
     this->notes->createNotes(this->GetWorld());
@@ -89,12 +102,12 @@ void AChart::BeginPlay() {
     this->SetActorLocation(CHART_LOCATION);
 
     this->createChords();
+    AHitbox *hitBox = (AHitbox*) GetWorld()->SpawnActor(AHitbox::StaticClass());
 }
 
 void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
                              const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset) {
-    float visualMultiplier{3.f};
-    FVector boxVisualScale{AChart::CHART_SCALE * FVector{1.f, visualMultiplier, 1.f}};
+    FVector boxVisualScale{AChart::CHART_SCALE};
 
     boxComponent->SetRelativeLocation(rootLocation);
     boxComponent->SetBoxExtent(AChart::CHART_SIZE, true);
@@ -107,7 +120,7 @@ void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& r
     boxVisual->SetupAttachment(boxComponent);
     if (boxVisualAsset.Succeeded()) {
         boxVisual->SetStaticMesh(boxVisualAsset.Object);
-        boxVisual->SetRelativeLocation(FVector{0.0f, AChart::CHART_SIZE.Y * (visualMultiplier-1), -AChart::CHART_SIZE.Z});
+        boxVisual->SetRelativeLocation(FVector{0.f, 0.f, -AChart::CHART_SIZE.Z});
         // fit the box to the root component size
         boxVisual->SetWorldScale3D(boxVisualScale);
         boxVisual->SetMaterial(0, this->boxVisualMaterial);

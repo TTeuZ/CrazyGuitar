@@ -20,9 +20,6 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Hitbox")
-        class UBoxComponent* collisionBox;
-
     UFUNCTION()
         void onOverlapBegin(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
@@ -36,6 +33,9 @@ private:
     const static FVector HITBOX_BASE_LOCATION;
     const static FVector HITBOX_SIZE;
     const static FString HITBOX_NAME;
+
+    UPROPERTY(VisibleAnywhere, Category = "Hitbox")
+        class UBoxComponent* collisionBox;
 
     UStaticMesh* hitboxMesh;
     UMaterial* hitboxMaterial;
