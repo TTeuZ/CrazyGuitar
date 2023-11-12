@@ -17,7 +17,7 @@ const FVector AChart::CAMERA_INITIAL_LOCATION{-AChart::CHART_SIZE.Y, 0.f, -AChar
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
 AChart::AChart()
-    : staticMeshes{nullptr, nullptr, nullptr, nullptr},
+    : chords{nullptr, nullptr, nullptr, nullptr},
       boxVisualMaterial{nullptr},
       stringVisualMaterial{nullptr},
       hitBoxVisualMaterial{nullptr} {
@@ -34,9 +34,6 @@ AChart::AChart()
 
     static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterialLoader{
         TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut")};
-    static ConstructorHelpers::FObjectFinder<UMaterial> stringVisualMaterialLoader{
-        TEXT("/Game/StarterContent/Materials/"
-             "M_Metal_Burnished_Steel.M_Metal_Burnished_Steel")};
     static ConstructorHelpers::FObjectFinder<UMaterial> hitBoxVisualMaterialLoader{TEXT("/Game/Materials/M_Hit_Box")};
 
     // Setting up the meterials
@@ -44,11 +41,6 @@ AChart::AChart()
         this->boxVisualMaterial = boxVisualMaterialLoader.Object;
     else
         UE_LOG(LogTemp, Warning, TEXT("Cannot find wood material"));
-
-    if (stringVisualMaterialLoader.Succeeded())
-        this->stringVisualMaterial = stringVisualMaterialLoader.Object;
-    else
-        UE_LOG(LogTemp, Warning, TEXT("Cannot find metal material"));
 
     if (hitBoxVisualMaterialLoader.Succeeded())
         this->hitBoxVisualMaterial = hitBoxVisualMaterialLoader.Object;
@@ -85,14 +77,7 @@ void AChart::BeginPlay() {
     Super::BeginPlay();
     this->SetActorLocation(CHART_INITIAL_LOCATION);
 
-    // AChord* chord = GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_INITIAL_LOCATION, FRotator{0.f, 0.f, 0.f});
-    FActorSpawnParameters spawnParams;
-    spawnParams.Name = FName("Chord1");
-    AChord* chord = GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_INITIAL_LOCATION, FRotator{0.f, 0.f, 0.f}, spawnParams);
-    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord created"));
-    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord index: %d"), chord->getIndex());
-    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord position: %p"), chord);
-    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord location: %s"), *chord->GetActorLocation().ToString());
+    this->createChords();
 }
 
 void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
@@ -147,7 +132,7 @@ void AChart::removeNoteAction(ANoteAction* noteAction) { this->noteActions.remov
 void AChart::popNoteAction() { this->noteActions.pop_front(); }
 
 void AChart::createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation,
-                                 const void* const boxVisualAssetPtr) {
+                             const void* const boxVisualAssetPtr) {
     FVector boxVisualScale{CHART_SCALE};
 
     // Casting the pointers
@@ -174,39 +159,23 @@ void AChart::createBoxVisual(const void* const boxComponentPtr, const FVector& r
     }
 }
 
-void AChart::createStringVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr) {
-    // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
-    UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
+void AChart::createChords() {
+    AChord* chord;
+    FActorSpawnParameters spawnParams;
+    FString chordName[4]{TEXT("Chord1"), TEXT("Chord2"), TEXT("Chord3"), TEXT("Chord4")};
+    spawnParams.Owner = this;
 
-    if (!cylinderVisualAsset.Succeeded()) {
-        UE_LOG(LogTemp, Warning, TEXT("Cannot create without mesh component"));
-        return;
+    std::array<AChord*, 4>::iterator it{this->chords.begin()};
+    for (uint8_t i{1}; it != this->chords.end(); ++it, ++i) {
+        spawnParams.Name = *chordName[i - 1];
+
+        (*it) = this->GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_INITIAL_LOCATION,
+                                                     FRotator{0.f, 0.f, 0.f}, FActorSpawnParameters{spawnParams});
+        (*it)->setIndex(i - 1);
+        UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord %d created"), i);
     }
 
-    // Create 4 cylinders componenets to represent the chart strings
-    // First created from Chord Actor
-    this->staticMeshes[0] = nullptr;
-
-    std::array<UStaticMeshComponent*, 4>::iterator it{this->staticMeshes.begin()};
-    ++it;
-    for (size_t i{1}; it != this->staticMeshes.end(); ++i, ++it) {
-        FVector stringBoxScale{0.02f, 0.02f, CHART_SCALE.Y};
-        FVector stringLocation{-10.f, CHART_SIZE.Y, CHART_SIZE.Z};
-        stringLocation.Z -= ((CHART_SIZE.Z * 2) / (MAX_CHORDS + 1)) * (i + 1);
-
-        FRotator stringRotation{0.f, 0.f, 270.0f};
-        FString stringName = FString::Printf(TEXT("String%d"), i);
-
-        (*it) = CreateDefaultSubobject<UStaticMeshComponent>(*stringName);
-        (*it)->SetupAttachment(boxComponent);
-        (*it)->SetStaticMesh(cylinderVisualAsset.Object);
-        (*it)->SetRelativeLocationAndRotation(stringLocation, stringRotation);
-        (*it)->SetWorldScale3D(stringBoxScale);
-        (*it)->SetMaterial(0, this->stringVisualMaterial);
-        (*it)->SetCastShadow(false);
-    }
+    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chords created"));
 }
 
 void AChart::createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr) {

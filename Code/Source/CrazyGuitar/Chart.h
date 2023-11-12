@@ -7,6 +7,7 @@
 #include <string>
 
 // Personal includes
+#include "CrazyGuitar/Chord.h"
 #include "NoteAction.h"
 
 // Unreal includes
@@ -35,7 +36,6 @@ class CRAZYGUITAR_API AChart : public APawn {
     void hitChord(int8_t chord); // TODO: Move to notes class ?
     
 
-    static constexpr float CHART_CHORDS_SPACE{0.75f};
     static const FVector CHART_INITIAL_LOCATION;
     static const FVector CHART_SIZE;
     static const FVector CHART_SCALE;
@@ -49,8 +49,8 @@ class CRAZYGUITAR_API AChart : public APawn {
     static const FVector CAMERA_INITIAL_LOCATION;
 
     void createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation, const void* const boxVisualAssetPtr);
-    void createStringVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);
     void createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);
+    void createChords();
 
     void clearNoteActions(); // TODO: Move to notes class
     void playNoteAction(); // TODO: Move to notes class
@@ -66,7 +66,8 @@ class CRAZYGUITAR_API AChart : public APawn {
     int8_t noteSpeed; // TODO: Move to notes class
     std::list<ANoteAction*> noteActions; // TODO: Move to notes class
 
-    std::array<UStaticMeshComponent*, 4> staticMeshes;
+    // std::array<UStaticMeshComponent*, 4> staticMeshes;
+    std::array<AChord*, 4> chords;
 
     UMaterial* boxVisualMaterial;
     UMaterial* stringVisualMaterial;
