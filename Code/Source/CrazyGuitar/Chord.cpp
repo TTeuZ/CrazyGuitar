@@ -4,7 +4,7 @@
 
 const FVector AChord::CHORD_BASE_POSITION{
     FVector{-10.0f, -AChart::CHART_SIZE.Y, AChart::CHART_SIZE.Z *AChord::CHORDS_SPACE_PERCENT_IN_CHART}};
-const FVector AChord::CHORD_INITIAL_LOCATION{AChart::CHART_INITIAL_LOCATION + AChord::CHORD_BASE_POSITION};
+const FVector AChord::CHORD_INITIAL_LOCATION{AChart::CHART_LOCATION + AChord::CHORD_BASE_POSITION};
 const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M_Metal_Burnished_Steel")};
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
 const FVector AChord::CHORD_SCALE{FVector{0.02f, 0.02f, AChart::CHART_SCALE.Y}};
@@ -55,7 +55,7 @@ void AChord::setIndex(const short int newIndex) {
     this->position = CHORD_POS_JUMP * this->index;
     FVector newLocation{AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position}};
     UE_LOG(LogTemp, Log, TEXT("AChord::setIndex: New location: %s"), *newLocation.ToString());
-    this->SetActorLocation(AChart::CHART_INITIAL_LOCATION + newLocation);
+    this->SetActorLocation(newLocation);
 }
 
 float AChord::getPosition() const { return this->position; }
