@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "UObject/ObjectMacros.h"
+
+// Must be the last include
 #include "Hitbox.generated.h"
 
 UCLASS()
@@ -17,9 +20,23 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Hitbox")
+        class UBoxComponent* collisionBox;
+
+    UFUNCTION()
+        void onOverlapBegin(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
+
+    UFUNCTION()
+        void onOverlapEnd(class UPrimitiveComponent* overlappedComp, class AActor* otherActor, class UPrimitiveComponent* otherComp, int32 otherBodyIndex);
+
 protected:
 	virtual void BeginPlay() override;
 
 private:	
+    const static FVector HITBOX_BASE_LOCATION;
+    const static FVector HITBOX_SIZE;
+    const static FString HITBOX_NAME;
 
+    UStaticMesh* hitboxMesh;
+    UMaterial* hitboxMaterial;
 };
