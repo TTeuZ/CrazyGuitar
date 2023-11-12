@@ -7,14 +7,16 @@
 #include <string>
 
 // Personal includes
-#include "CrazyGuitar/Chord.h"
-#include "NoteAction.h"
+#include "Notes.h"
+#include "Chord.h"
 
 // Unreal includes
-#include "Camera/CameraComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Materials/Material.h"
+#include "UObject/ConstructorHelpers.h"
+#include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 
 // Must be the last include
 #include "Chart.generated.h"
@@ -24,50 +26,42 @@ class CRAZYGUITAR_API AChart : public APawn {
     GENERATED_BODY()
 
    public:
+    constexpr static uint8_t MAX_CHORDS{4};
+    const static FVector CHART_INITIAL_LOCATION;
+    const static FVector CHART_SIZE;
+    const static FVector CHART_SCALE;
+    const static FString CHART_NAME;
+
     AChart();
-    virtual ~AChart() = default;
+    virtual ~AChart();
 
     virtual void Tick(float deltaTime) override;
+
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-    void addNoteAction(ANoteAction* noteAction); // TODO: Move to notes class (Necessary?)
-    void removeNoteAction(ANoteAction* noteAction); // TODO: Move to notes class (Necessary?)
-    void popNoteAction(); // TODO: Move to notes class (Necessary?)
-    void hitChord(int8_t chord); // TODO: Move to notes class ?
-    
-
-    static const FVector CHART_INITIAL_LOCATION;
-    static const FVector CHART_SIZE;
-    static const FVector CHART_SCALE;
-    static const FString CHART_NAME;
+    void hitChord(const int8_t& chord);
 
    protected:
     virtual void BeginPlay() override;
 
    private:
-    constexpr static uint8_t MAX_CHORDS{4};
-    static const FVector CAMERA_INITIAL_LOCATION;
+    const static FVector CAMERA_INITIAL_LOCATION;
 
-    void createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation, const void* const boxVisualAssetPtr);
-    void createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr);
+    void createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
+                         const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset);
+    void createHitboxVisual(UBoxComponent* const boxComponent,
+                            const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset);
     void createChords();
-
-    void clearNoteActions(); // TODO: Move to notes class
-    void playNoteAction(); // TODO: Move to notes class
 
     void hitFirstChord();
     void hitSecondChord();
     void hitThirdChord();
     void hitFourthChord();
 
-    void setupTestGame();
     void startGame();
 
-    int8_t noteSpeed; // TODO: Move to notes class
-    std::list<ANoteAction*> noteActions; // TODO: Move to notes class
-
-    // std::array<UStaticMeshComponent*, 4> staticMeshes;
     std::array<AChord*, 4> chords;
+    Notes* notes;
 
     UMaterial* boxVisualMaterial;
     UMaterial* stringVisualMaterial;

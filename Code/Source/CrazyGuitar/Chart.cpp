@@ -3,11 +3,9 @@
 #include "Chord.h"
 
 // Unreal includes
-#include "Components/BoxComponent.h"
 #include "Engine/EngineBaseTypes.h"
 #include "Materials/Material.h"
 #include "Math/UnrealMathUtility.h"
-#include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
 
 const FVector AChart::CHART_SIZE{10.f, 300.f, 60.f};
@@ -17,9 +15,8 @@ const FVector AChart::CAMERA_INITIAL_LOCATION{-AChart::CHART_SIZE.Y, 0.f, -AChar
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
 AChart::AChart()
-    : noteSpeed{1},
-      noteActions{std::list<ANoteAction*>{}},  // TODO: To be moved to Notes class
-      chords{nullptr, nullptr, nullptr, nullptr},
+    : chords{nullptr, nullptr, nullptr, nullptr},
+      notes{new Notes{}},
       boxVisualMaterial{nullptr},
       stringVisualMaterial{nullptr},
       hitBoxVisualMaterial{nullptr},
@@ -57,30 +54,23 @@ AChart::AChart()
     this->RootComponent = boxComponent;
 
     // Creating the visual items for the game
-    this->createBoxVisual(boxComponent, rootLocation, &boxVisualAsset);
-    this->createHitboxVisual(boxComponent, &cylinderVisualAsset);
+    this->createBoxVisual(boxComponent, rootLocation, boxVisualAsset);
+    this->createHitboxVisual(boxComponent, cylinderVisualAsset);
 
     // Creating the camera
     FVector cameraLocation{CAMERA_INITIAL_LOCATION};
-    this->chartCamera = CreateDefaultSubobject<UCameraComponent>(
-        TEXT("Camera"));  // (Unreal do not allow to use {} in this constructor)
+    this->chartCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
     this->chartCamera->SetRelativeLocation(cameraLocation);
     this->chartCamera->SetupAttachment(this->RootComponent);
 
     // Define player controller
     this->AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-    // Creating the visible game component (Unreal do not allow to use {} in this constructor)
     this->visibleComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisibleComponent"));
     this->visibleComponent->SetupAttachment(this->RootComponent);
 }
 
-void AChart::BeginPlay() {
-    Super::BeginPlay();
-    this->SetActorLocation(CHART_INITIAL_LOCATION);
-
-    this->createChords();
-}
+AChart::~AChart() { delete this->notes; }
 
 void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
 
@@ -97,50 +87,18 @@ void AChart::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) {
     PlayerInputComponent->BindAction("Start", IE_Released, this, &AChart::startGame);
 }
 
-void AChart::hitChord(int8_t chord) {
-    std::list<ANoteAction*>::iterator it{this->noteActions.begin()};
-    for (; it != this->noteActions.end(); ++it) {
-        if (*it != nullptr) {
-            FVector location = (*it)->getPosition();
-            UE_LOG(LogTemp, Warning, TEXT("HIT LOCATION %f"), location.Y);
-            UE_LOG(LogTemp, Warning, TEXT("HIT CHORD %d"), chord + 1);
-            if ((*it)->isHit(chord, location.Y)) {
-                // play note
-                (*it)->playNote();
+void AChart::hitChord(const int8_t& chord) { this->notes->handleHit(chord); }
 
-                // remove note from list
-                ANoteAction* noteAction = *it;
-                it = this->noteActions.erase(it);
+void AChart::BeginPlay() {
+    Super::BeginPlay();
+    this->SetActorLocation(CHART_INITIAL_LOCATION);
 
-                // destroy note
-                noteAction->Destroy();
-
-                UE_LOG(LogTemp, Log, TEXT("HIT CORRECT"));
-
-                if (this->noteActions.empty()) {
-                    UE_LOG(LogTemp, Log, TEXT("END OF GAME"));
-                }
-                return;
-            } else
-                UE_LOG(LogTemp, Log, TEXT("HIT WRONG"));
-        }
-    }
+    this->createChords();
 }
 
-void AChart::addNoteAction(ANoteAction* noteAction) { this->noteActions.push_back(noteAction); }
-
-void AChart::removeNoteAction(ANoteAction* noteAction) { this->noteActions.remove(noteAction); }
-
-void AChart::popNoteAction() { this->noteActions.pop_front(); }
-
-void AChart::createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation,
-                             const void* const boxVisualAssetPtr) {
-    FVector boxVisualScale{CHART_SCALE};
-
-    // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)boxVisualAssetPtr);
-    UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
+void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
+                                 const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset) {
+    FVector boxVisualScale{AChart::CHART_SCALE};
 
     boxComponent->SetRelativeLocation(rootLocation);
     boxComponent->SetBoxExtent(CHART_SIZE, true);
@@ -148,7 +106,7 @@ void AChart::createBoxVisual(const void* const boxComponentPtr, const FVector& r
     // defining colision profile
     boxComponent->SetCollisionProfileName(TEXT("Pawn"));
 
-    // Cria e posiciona um componente de malha (MeshComponent) (Unreal do not allow to use {} in this constructor)
+    // Cria e posiciona um componente de malha (MeshComponent)
     this->boxVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualRepresentation"));
     boxVisual->SetupAttachment(boxComponent);
     if (boxVisualAsset.Succeeded()) {
@@ -158,6 +116,23 @@ void AChart::createBoxVisual(const void* const boxComponentPtr, const FVector& r
         boxVisual->SetWorldScale3D(boxVisualScale);
         boxVisual->SetMaterial(0, this->boxVisualMaterial);
         boxVisual->SetCastShadow(false);
+    }
+}
+
+void AChart::createHitboxVisual(UBoxComponent* const boxComponent,
+                                    const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset) {
+    if (cylinderVisualAsset.Succeeded()) {
+        FVector hitBoxBoxScale{0.2f, 0.2f, CHART_SCALE.Z * 1.05f};
+        FVector hitBoxLocation{-10.f, -154.f, -CHART_SIZE.Z * 1.05f};
+        FString hitBoxName = FString::Printf(TEXT("HitBox"));
+
+        this->hitBoxVisual = CreateDefaultSubobject<UStaticMeshComponent>(*hitBoxName);
+        this->hitBoxVisual->SetupAttachment(boxComponent);
+        this->hitBoxVisual->SetStaticMesh(cylinderVisualAsset.Object);
+        this->hitBoxVisual->SetRelativeLocation(hitBoxLocation);
+        this->hitBoxVisual->SetWorldScale3D(hitBoxBoxScale);
+        this->hitBoxVisual->SetMaterial(0, this->hitBoxVisualMaterial);
+        this->hitBoxVisual->SetCastShadow(false);
     }
 }
 
@@ -180,71 +155,13 @@ void AChart::createChords() {
     UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chords created"));
 }
 
-void AChart::createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr) {
-    // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
-        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
-    UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
-
-    if (cylinderVisualAsset.Succeeded()) {
-        FVector hitBoxBoxScale{0.2f, 0.2f, CHART_SCALE.Z * 1.05f};
-        FVector hitBoxLocation{-10.f, -154.f, -CHART_SIZE.Z * 1.05f};
-        FString hitBoxName = FString::Printf(TEXT("HitBox"));
-
-        this->hitBoxVisual = CreateDefaultSubobject<UStaticMeshComponent>(*hitBoxName);
-        this->hitBoxVisual->SetupAttachment(boxComponent);
-        this->hitBoxVisual->SetStaticMesh(cylinderVisualAsset.Object);
-        this->hitBoxVisual->SetRelativeLocation(hitBoxLocation);
-        this->hitBoxVisual->SetWorldScale3D(hitBoxBoxScale);
-        this->hitBoxVisual->SetMaterial(0, this->hitBoxVisualMaterial);
-        this->hitBoxVisual->SetCastShadow(false);
-    }
-}
-
-void AChart::clearNoteActions() {
-    for (ANoteAction* noteAction : this->noteActions) {
-        noteAction->Destroy();
-    }
-    this->noteActions.clear();
-}
-
 void AChart::hitFirstChord() { this->hitChord(0); }
 void AChart::hitSecondChord() { this->hitChord(1); }
 void AChart::hitThirdChord() { this->hitChord(2); }
 void AChart::hitFourthChord() { this->hitChord(3); }
 
-void AChart::setupTestGame() {
-    float zJump = (CHART_SIZE.Z * 2) / (MAX_CHORDS + 1);
-    FVector defaultLocation{CHART_INITIAL_LOCATION.X * 0.9f, 200.f, CHART_INITIAL_LOCATION.Z + CHART_SIZE.Z - zJump};
-
-    // ANoteAction* noteAction1 = new ANoteAction(0, defaultLocation);
-    // replace new operator to use in unreal
-    ANoteAction* noteActionAux;
-    ANoteAction* noteActionAux2;
-    for (int32_t i{0}; i < 30; ++i) {
-        noteActionAux = GetWorld()->SpawnActor<ANoteAction>();
-        noteActionAux->setChord(FMath::RandRange(0, 3));
-        noteActionAux2 = this->noteActions.back();
-        float prevYLocation = 0.f;
-        float min = 0.f;
-        if (noteActionAux2 != nullptr) {
-            prevYLocation = noteActionAux2->getPosition().Y;
-            if (noteActionAux2->getChord() == noteActionAux->getChord()) {
-                min = 30.f;
-            }
-        }
-        float yLocation = prevYLocation + FMath::RandRange(min, 60.f);
-        float zLocation = -zJump * noteActionAux->getChord();
-        noteActionAux->setPosition(defaultLocation + FVector(0.f, yLocation, zLocation));
-        this->addNoteAction(noteActionAux);
-    }
-}
-
 void AChart::startGame() {
-    this->clearNoteActions();
-    this->setupTestGame();
-    std::list<ANoteAction*>::const_iterator it{this->noteActions.begin()};
-    for (; it != this->noteActions.end(); ++it) {
-        (*it)->setCanMove(true);
-    }
+    this->notes->clearNoteActions();
+    this->notes->createNotes(this->GetWorld());
+    this->notes->startNotes();
 }
