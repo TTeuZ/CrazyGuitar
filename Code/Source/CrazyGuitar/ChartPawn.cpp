@@ -8,30 +8,46 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
 
-AChartPawn::AChartPawn() : boxVisualMaterial{nullptr}, stringVisualMaterial{nullptr}, hitBoxVisualMaterial{nullptr}, staticMeshes{nullptr, nullptr, nullptr, nullptr} {
+AChartPawn::AChartPawn()
+    : noteSpeed{1},
+      noteActions{std::list<ANoteAction*>{}},  // TODO: To be moved to Notes class
+      staticMeshes{nullptr, nullptr, nullptr, nullptr},
+      boxVisualMaterial{nullptr},
+      stringVisualMaterial{nullptr},
+      hitBoxVisualMaterial{nullptr},
+      boxVisual{nullptr},
+      visibleComponent{nullptr},
+      chartCamera{nullptr},
+      hitBoxVisual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
-
-    // Initial definition for chart member data
-    this->noteSpeed = 1; // TODO: To be moved to Notes class
-    this->noteActions = std::list<ANoteAction*>{};  // TODO: To be moved to Notes class
 
     // Constructors helpers to build the chart
     static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset{
+        TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
 
-    static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterialLoader{TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut")};
-    static ConstructorHelpers::FObjectFinder<UMaterial> stringVisualMaterialLoader{TEXT("/Game/StarterContent/Materials/" "M_Metal_Burnished_Steel.M_Metal_Burnished_Steel")};
+    static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterialLoader{
+        TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut")};
+    static ConstructorHelpers::FObjectFinder<UMaterial> stringVisualMaterialLoader{
+        TEXT("/Game/StarterContent/Materials/"
+             "M_Metal_Burnished_Steel.M_Metal_Burnished_Steel")};
     static ConstructorHelpers::FObjectFinder<UMaterial> hitBoxVisualMaterialLoader{TEXT("/Game/Materials/M_Hit_Box")};
 
     // Setting up the meterials
-    if (boxVisualMaterialLoader.Succeeded()) this->boxVisualMaterial = boxVisualMaterialLoader.Object;
-    else UE_LOG(LogTemp, Warning, TEXT("Cannot find wood material"));
+    if (boxVisualMaterialLoader.Succeeded())
+        this->boxVisualMaterial = boxVisualMaterialLoader.Object;
+    else
+        UE_LOG(LogTemp, Warning, TEXT("Cannot find wood material"));
 
-    if (stringVisualMaterialLoader.Succeeded()) this->stringVisualMaterial = stringVisualMaterialLoader.Object;
-    else UE_LOG(LogTemp, Warning, TEXT("Cannot find metal material"));
-    
-    if (hitBoxVisualMaterialLoader.Succeeded()) this->hitBoxVisualMaterial = hitBoxVisualMaterialLoader.Object;
-    else UE_LOG(LogTemp, Warning, TEXT("Cannot find hitbox material"));
+    if (stringVisualMaterialLoader.Succeeded())
+        this->stringVisualMaterial = stringVisualMaterialLoader.Object;
+    else
+        UE_LOG(LogTemp, Warning, TEXT("Cannot find metal material"));
+
+    if (hitBoxVisualMaterialLoader.Succeeded())
+        this->hitBoxVisualMaterial = hitBoxVisualMaterialLoader.Object;
+    else
+        UE_LOG(LogTemp, Warning, TEXT("Cannot find hitbox material"));
 
     // Defining component location and size
     FVector rootLocation{0.f, 0.f, 0.f};
@@ -47,7 +63,8 @@ AChartPawn::AChartPawn() : boxVisualMaterial{nullptr}, stringVisualMaterial{null
 
     // Creating the camera
     FVector cameraLocation{CAMERA_INITIAL_LOCATION};
-    this->chartCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera")); // (Unreal do not allow to use {} in this constructor)
+    this->chartCamera = CreateDefaultSubobject<UCameraComponent>(
+        TEXT("Camera"));  // (Unreal do not allow to use {} in this constructor)
     this->chartCamera->SetRelativeLocation(cameraLocation);
     this->chartCamera->SetupAttachment(this->RootComponent);
 
@@ -115,11 +132,13 @@ void AChartPawn::removeNoteAction(ANoteAction* noteAction) { this->noteActions.r
 
 void AChartPawn::popNoteAction() { this->noteActions.pop_front(); }
 
-void AChartPawn::createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation, const void* const boxVisualAssetPtr) {
+void AChartPawn::createBoxVisual(const void* const boxComponentPtr, const FVector& rootLocation,
+                                 const void* const boxVisualAssetPtr) {
     FVector boxVisualScale{CHART_SCALE};
 
     // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset = *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)boxVisualAssetPtr);
+    ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset =
+        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)boxVisualAssetPtr);
     UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
 
     boxComponent->SetRelativeLocation(rootLocation);
@@ -143,7 +162,8 @@ void AChartPawn::createBoxVisual(const void* const boxComponentPtr, const FVecto
 
 void AChartPawn::createStringVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr) {
     // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset = *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
+    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
+        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
     UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
 
     if (!cylinderVisualAsset.Succeeded()) {
@@ -173,7 +193,8 @@ void AChartPawn::createStringVisual(const void* const boxComponentPtr, const voi
 
 void AChartPawn::createHitboxVisual(const void* const boxComponentPtr, const void* const cylinderVisualAssetPtr) {
     // Casting the pointers
-    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset = *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
+    ConstructorHelpers::FObjectFinder<UStaticMesh> cylinderVisualAsset =
+        *((ConstructorHelpers::FObjectFinder<UStaticMesh>*)cylinderVisualAssetPtr);
     UBoxComponent* boxComponent = (UBoxComponent*)boxComponentPtr;
 
     if (cylinderVisualAsset.Succeeded()) {
