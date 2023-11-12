@@ -55,8 +55,6 @@ class CRAZYGUITAR_API AChart : public APawn {
 
     void createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
                          const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset);
-    void createHitboxVisual(UBoxComponent* const boxComponent,
-                            const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset);
     void createChords();
 
     std::array<AChord*, AChart::MAX_CHORDS> chords;

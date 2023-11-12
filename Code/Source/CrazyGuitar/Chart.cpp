@@ -10,12 +10,12 @@
 #include "Math/UnrealMathUtility.h"
 #include "UObject/Object.h"
 
-const FVector AChart::CHART_SIZE{5.f, 300.f, 80.f};
+const FVector AChart::CHART_SIZE{5.f, 500.f, 100.f};
 const FVector AChart::CHART_SCALE{CHART_SIZE / 50.f};
 const FVector AChart::CHART_LOCATION{0.f, 0.f, 100.f};
 const FRotator AChart::CHART_ROTATION{270.f, 0.f, 270.f};
-const FVector AChart::CAMERA_LOCATION{-100.f, -AChart::CHART_SIZE.Y, 0.f};
-const FRotator AChart::CAMERA_ROTATION{0.f, 65.f, 90.f};
+const FVector AChart::CAMERA_LOCATION{-150.f, -AChart::CHART_SIZE.Y * 1.4f, 0.f};
+const FRotator AChart::CAMERA_ROTATION{0.f, 75.f, 90.f};
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
 AChart::AChart()
@@ -58,7 +58,6 @@ AChart::AChart()
 
     // Creating the visual items for the game
     this->createBoxVisual(boxComponent, rootLocation, boxVisualAsset);
-    this->createHitboxVisual(boxComponent, cylinderVisualAsset);
 
     // Creating the camera
     this->chartCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -102,7 +101,6 @@ void AChart::BeginPlay() {
     this->SetActorLocation(CHART_LOCATION);
 
     this->createChords();
-    AHitbox *hitBox = (AHitbox*) GetWorld()->SpawnActor(AHitbox::StaticClass());
 }
 
 void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
@@ -125,23 +123,6 @@ void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& r
         boxVisual->SetWorldScale3D(boxVisualScale);
         boxVisual->SetMaterial(0, this->boxVisualMaterial);
         boxVisual->SetCastShadow(false);
-    }
-}
-
-void AChart::createHitboxVisual(UBoxComponent* const boxComponent,
-                                const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset) {
-    if (cylinderVisualAsset.Succeeded()) {
-        FVector hitBoxBoxScale{0.2f, 0.2f, CHART_SCALE.Z * 1.05f};
-        FVector hitBoxLocation{-10.f, -154.f, -CHART_SIZE.Z * 1.05f};
-        FString hitBoxName = FString::Printf(TEXT("HitBox"));
-
-        this->hitBoxVisual = CreateDefaultSubobject<UStaticMeshComponent>(*hitBoxName);
-        this->hitBoxVisual->SetupAttachment(boxComponent);
-        this->hitBoxVisual->SetStaticMesh(cylinderVisualAsset.Object);
-        this->hitBoxVisual->SetRelativeLocation(hitBoxLocation);
-        this->hitBoxVisual->SetWorldScale3D(hitBoxBoxScale);
-        this->hitBoxVisual->SetMaterial(0, this->hitBoxVisualMaterial);
-        this->hitBoxVisual->SetCastShadow(false);
     }
 }
 
