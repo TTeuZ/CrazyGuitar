@@ -3,7 +3,7 @@
 // Unreal Includes
 #include "Kismet/GameplayStatics.h"
 
-ACrazyGuitarController::ACrazyGuitarController() : chart{nullptr}, playerSave{new PlayerSave{}} {};
+ACrazyGuitarController::ACrazyGuitarController() : chart{nullptr} {};
 
 void ACrazyGuitarController::SetupInputComponent() {
     Super::SetupInputComponent();

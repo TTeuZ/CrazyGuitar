@@ -2,7 +2,6 @@
 
 // Personal Includes
 #include "Chart.h"
-#include "PlayerSave.h"
 
 // Unreal Includes
 #include "CoreMinimal.h"
@@ -33,5 +32,4 @@ class CRAZYGUITAR_API ACrazyGuitarController : public APlayerController {
     void hitFourthChord();
 
     AChart* chart;
-    PlayerSave* playerSave;
 };

@@ -9,7 +9,6 @@ const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
 const FVector AChord::CHORD_SCALE{FVector{0.02f, 0.02f, AChart::CHART_SCALE.Y}};
 const FVector AChord::CHORD_SIZE{AChord::CHORD_SCALE * 50.f};
-
 static const float CHORD_POS_JUMP{AChord::CHORD_BASE_POSITION.Z / 1.5f};
 
 AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, material{nullptr}, visual{nullptr} {
@@ -39,23 +38,24 @@ AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, material{nullptr}, v
     }
 
     this->SetActorLocation(AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position});
+
     // Log actor location
     UE_LOG(LogTemp, Log, TEXT("AChord::AChord: Actor location: %s"), *this->GetActorLocation().ToString());
-
     UE_LOG(LogTemp, Log, TEXT("AChord::AChord: Chord created"));
-}
-
-void AChord::BeginPlay() { Super::BeginPlay(); 
 }
 
 int AChord::getIndex() const { return this->index; }
 
-void AChord::setIndex(const short int newIndex) {
+float AChord::getPosition() const { return this->position; }
+
+void AChord::setIndex(const uint8_t newIndex) {
     this->index = newIndex;
     this->position = CHORD_POS_JUMP * this->index;
+
     FVector newLocation{AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position}};
-    UE_LOG(LogTemp, Log, TEXT("AChord::setIndex: New location: %s"), *newLocation.ToString());
     this->SetActorLocation(AChart::CHART_INITIAL_LOCATION + newLocation);
+
+    UE_LOG(LogTemp, Log, TEXT("AChord::setIndex: New location: %s"), *newLocation.ToString());
 }
 
-float AChord::getPosition() const { return this->position; }
+void AChord::BeginPlay() { Super::BeginPlay(); }
