@@ -4,7 +4,7 @@
 
 const FVector AChord::CHORD_BASE_POSITION{
     FVector{-10.0f, -AChart::CHART_SIZE.Y, AChart::CHART_SIZE.Z *AChord::CHORDS_SPACE_PERCENT_IN_CHART}};
-const FVector AChord::CHORD_INITIAL_LOCATION{AChart::CHART_INITIAL_LOCATION + AChord::CHORD_BASE_POSITION};
+const FVector AChord::CHORD_INITIAL_LOCATION{AChart::CHART_LOCATION + AChord::CHORD_BASE_POSITION};
 const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M_Metal_Burnished_Steel")};
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
 const FVector AChord::CHORD_SCALE{FVector{0.02f, 0.02f, AChart::CHART_SCALE.Y}};
