@@ -5,8 +5,8 @@
 
 const float Notes::ZJUMP{(AChart::CHART_SIZE.Z * 2) / (AChart::MAX_CHORDS + 1)};
 const FVector Notes::DEFAULT_NOTE_LOCATION{
-    AChart::CHART_INITIAL_LOCATION.X * 0.9f, 200.f,
-    AChart::CHART_INITIAL_LOCATION.Z + AChart::CHART_SIZE.Z - Notes::ZJUMP};
+    AChart::CHART_LOCATION.X * 0.9f, 200.f,
+    AChart::CHART_LOCATION.Z + AChart::CHART_SIZE.Z - Notes::ZJUMP};
 
 Notes::Notes() : noteSpeed{1} {}
 

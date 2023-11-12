@@ -10,7 +10,7 @@
 
 const FVector AChart::CHART_SIZE{10.f, 300.f, 60.f};
 const FVector AChart::CHART_SCALE{CHART_SIZE / 50.f};
-const FVector AChart::CHART_INITIAL_LOCATION{200.f, 0.f, 250.f};
+const FVector AChart::CHART_LOCATION{200.f, 0.f, 250.f};
 const FVector AChart::CAMERA_INITIAL_LOCATION{-AChart::CHART_SIZE.Y, 0.f, -AChart::CHART_SIZE.Z};
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
@@ -84,7 +84,7 @@ void AChart::hitChord(const int8_t& chord) { this->notes->handleHit(chord); }
 
 void AChart::BeginPlay() {
     Super::BeginPlay();
-    this->SetActorLocation(CHART_INITIAL_LOCATION);
+    this->SetActorLocation(CHART_LOCATION);
 
     this->createChords();
 }
@@ -139,7 +139,7 @@ void AChart::createChords() {
     for (uint8_t i{1}; it != this->chords.end(); ++it, ++i) {
         spawnParams.Name = *chordName[i - 1];
 
-        (*it) = this->GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_INITIAL_LOCATION,
+        (*it) = this->GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_LOCATION,
                                                      FRotator{0.f, 0.f, 0.f}, FActorSpawnParameters{spawnParams});
         (*it)->setIndex(i - 1);
         UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord %d created"), i);
