@@ -1,8 +1,8 @@
 #pragma once
 
+#include "GameFramework/Actor.h"
 #include "Materials/Material.h"
 #include "Math/Vector.h"
-#include "GameFramework/Actor.h"
 
 // Must be the last include
 #include "Chord.generated.h"
@@ -10,7 +10,7 @@
 UCLASS()
 class AChord : public AActor {
     GENERATED_BODY()
-       
+
    public:
     AChord();
     virtual ~AChord() = default;
@@ -18,12 +18,13 @@ class AChord : public AActor {
     static const FVector CHORD_BASE_POSITION;
     static const FVector CHORD_INITIAL_LOCATION;
 
-    void BeginPlay() override;
-
     int getIndex() const;
     void setIndex(const short int newIndex);
 
     float getPosition() const;
+
+   protected:
+    void BeginPlay() override;
 
    private:
     static constexpr float CHORDS_SPACE_PERCENT_IN_CHART{0.7f};
