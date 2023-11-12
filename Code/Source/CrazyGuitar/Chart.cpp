@@ -64,7 +64,6 @@ AChart::AChart()
 
     // Creating the visual items for the game
     this->createBoxVisual(boxComponent, rootLocation, &boxVisualAsset);
-    this->createStringVisual(boxComponent, &cylinderVisualAsset);
     this->createHitboxVisual(boxComponent, &cylinderVisualAsset);
 
     // Creating the camera
@@ -85,6 +84,15 @@ AChart::AChart()
 void AChart::BeginPlay() {
     Super::BeginPlay();
     this->SetActorLocation(CHART_INITIAL_LOCATION);
+
+    // AChord* chord = GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_INITIAL_LOCATION, FRotator{0.f, 0.f, 0.f});
+    FActorSpawnParameters spawnParams;
+    spawnParams.Name = FName("Chord1");
+    AChord* chord = GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_INITIAL_LOCATION, FRotator{0.f, 0.f, 0.f}, spawnParams);
+    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord created"));
+    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord index: %d"), chord->getIndex());
+    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord position: %p"), chord);
+    UE_LOG(LogTemp, Log, TEXT("AChart::createStringVisual: Chord location: %s"), *chord->GetActorLocation().ToString());
 }
 
 void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
@@ -179,9 +187,7 @@ void AChart::createStringVisual(const void* const boxComponentPtr, const void* c
 
     // Create 4 cylinders componenets to represent the chart strings
     // First created from Chord Actor
-    AChord* chord = GetWorld()->SpawnActor<AChord>();
-    chord->setIndex(0);
-    this->staticMeshes[0] = chord->getVisual();
+    this->staticMeshes[0] = nullptr;
 
     std::array<UStaticMeshComponent*, 4>::iterator it{this->staticMeshes.begin()};
     ++it;

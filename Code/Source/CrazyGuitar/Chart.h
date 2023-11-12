@@ -34,6 +34,8 @@ class CRAZYGUITAR_API AChart : public APawn {
     void popNoteAction(); // TODO: Move to notes class (Necessary?)
     void hitChord(int8_t chord); // TODO: Move to notes class ?
     
+
+    static constexpr float CHART_CHORDS_SPACE{0.75f};
     static const FVector CHART_INITIAL_LOCATION;
     static const FVector CHART_SIZE;
     static const FVector CHART_SCALE;

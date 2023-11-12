@@ -2,7 +2,7 @@
 
 #include "Chart.h"
 
-const FVector AChord::CHORD_BASE_POSITION{FVector{-10.0f, AChart::CHART_SIZE.Y, AChart::CHART_SIZE.Z * 0.9f}};
+const FVector AChord::CHORD_BASE_POSITION{FVector{-10.0f, -AChart::CHART_SIZE.Y, AChart::CHART_SIZE.Z * AChart::CHART_CHORDS_SPACE}};
 const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M_Metal_Burnished_Steel")};
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
 const FVector AChord::CHORD_SCALE{FVector{0.02f, 0.02f, AChart::CHART_SCALE.Y}};
@@ -26,37 +26,32 @@ AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, material{nullptr}, v
     if (!this->visual) {
         UE_LOG(LogTemp, Warning, TEXT("AChord::AChord: Failed to load mesh"));
         UE_LOG(LogTemp, Error, TEXT("AChord::AChord: Unable to create visual"));
-    }
-    else {
+    } else {
         this->SetActorScale3D(FVector{0.02f, 0.02f, AChart::CHART_SCALE.Y});
         this->chordVisual = this->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ChordVisual"));
         this->chordVisual->SetStaticMesh(this->visual);
         this->chordVisual->SetMaterial(0, this->material);
-        this->chordVisual->SetRelativeLocation(FVector{-AChart::CHART_SIZE.X, 0.f, 0.f});
+        this->chordVisual->SetRelativeLocation(FVector{0.f, 0.f, 0.f});
+        this->chordVisual->SetRelativeRotation(FRotator{0.f, 0.f, 90.0f});
         this->chordVisual->SetupAttachment(this->GetRootComponent());
         this->chordVisual->SetCastShadow(false);
     }
 
-    this->SetActorRelativeRotation(FRotator{0.f, 0.f, 90.f});
+    this->SetActorLocation(AChord::CHORD_BASE_POSITION + FVector{0.f, 0.f, this->position});
 
     UE_LOG(LogTemp, Log, TEXT("AChord::AChord: Chord created"));
 }
 
 void AChord::BeginPlay() {
     Super::BeginPlay();
-
-    this->SetActorLocation(AChord::CHORD_BASE_POSITION + FVector{0.f, 0.f, this->position});
 }
-
 
 int AChord::getIndex() const { return this->index; }
 
-void AChord::setIndex(const short int newIndex) { 
-    this->index = newIndex; 
+void AChord::setIndex(const short int newIndex) {
+    this->index = newIndex;
     this->position = CHORD_POS_JUMP * this->index;
     this->SetActorLocation(AChord::CHORD_BASE_POSITION + FVector{0.f, 0.f, this->position});
 }
 
-UStaticMeshComponent *const AChord::getVisual() const {
-    return this->chordVisual;
-}
+UStaticMeshComponent *const AChord::getVisual() const { return this->chordVisual; }
