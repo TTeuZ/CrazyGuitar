@@ -27,6 +27,7 @@ class CRAZYGUITAR_API APlayerSave : public APlayerState {
    private:
     uint32_t hits;
     uint32_t misses;
+    uint32_t hitStreak;
 
     void updateHUDContent();
 };

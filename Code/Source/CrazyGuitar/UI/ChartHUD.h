@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 // Personal Includes
 #include "PlayerSaveWidget.h"
 
@@ -27,12 +25,16 @@ class CRAZYGUITAR_API AChartHUD : public AHUD {
 
     virtual void BeginPlay() override;
 
+    // For some reason, the compiler doesn't allow us to use cstdint classes only here.
     UFUNCTION()
     void updateDisplayedState(const float& score, const uint32& hits, const uint32& misses);
 
+    UFUNCTION()
+    void updateDisplayedStreak(const uint32& streak);
+
    private:
     UPROPERTY(EditDefaultsOnly, Category = "Widgets")
-    TSubclassOf<UUserWidget> PlayerSaveWidgetClass;
+    TSubclassOf<UUserWidget> playerSaveWidgetClass;
 
-    UPlayerSaveWidget* PlayerSaveWidget;
+    UPlayerSaveWidget* playerSaveWidget;
 };
