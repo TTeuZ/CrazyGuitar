@@ -8,15 +8,15 @@
 #include "GameFramework/PlayerController.h"
 
 // Must be the last include
-#include "CrazyGuitarController.generated.h"
+#include "ChartController.generated.h"
 
 UCLASS()
-class CRAZYGUITAR_API ACrazyGuitarController : public APlayerController {
+class CRAZYGUITAR_API AChartController : public APlayerController {
     GENERATED_BODY()
 
    public:
-    ACrazyGuitarController();
-    virtual ~ACrazyGuitarController() = default;
+    AChartController();
+    virtual ~AChartController() = default;
 
     virtual void SetupInputComponent() override;
 

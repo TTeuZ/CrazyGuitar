@@ -6780,7 +6780,7 @@
 											"top": 1047,
 											"width": 439,
 											"height": 13,
-											"text": "CrazyGuitarGameModeBase"
+											"text": "InGameModeBase"
 										},
 										{
 											"_type": "LabelView",
@@ -8770,7 +8770,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGLrC6KdqLQGHE="
 					},
-					"name": "CrazyGuitarGameModeBase",
+					"name": "InGameModeBase",
 					"ownedElements": [
 						{
 							"_type": "UMLGeneralization",
@@ -9396,7 +9396,7 @@
 											"top": 399,
 											"width": 215,
 											"height": 13,
-											"text": "CrazyGuitarController"
+											"text": "ChartController"
 										},
 										{
 											"_type": "LabelView",
@@ -11720,7 +11720,7 @@
 											"top": 183,
 											"width": 183,
 											"height": 13,
-											"text": "CrazyGuitarHud"
+											"text": "ChartHUD"
 										},
 										{
 											"_type": "LabelView",
@@ -12357,7 +12357,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGLwIHORF4iZ4s="
 					},
-					"name": "CrazyGuitarController",
+					"name": "ChartController",
 					"ownedElements": [
 						{
 							"_type": "UMLAssociation",
@@ -12506,7 +12506,7 @@
 					"_parent": {
 						"$ref": "AAAAAAGLwIHORF4iZ4s="
 					},
-					"name": "CrazyGuitarHud",
+					"name": "ChartHUD",
 					"ownedElements": [
 						{
 							"_type": "UMLDependency",

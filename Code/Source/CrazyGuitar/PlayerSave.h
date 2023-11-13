@@ -4,17 +4,17 @@
 #include "GameFramework/PlayerState.h"
 
 // Must be the last include
-#include "CrazyGuitarPlayerState.generated.h"
+#include "PlayerSave.generated.h"
 
 UCLASS()
-class CRAZYGUITAR_API ACrazyGuitarPlayerState : public APlayerState {
+class CRAZYGUITAR_API APlayerSave : public APlayerState {
     GENERATED_BODY()
 
    public:
     constexpr static float HIT_SCORE{100.f};
 
-    ACrazyGuitarPlayerState();
-    virtual ~ACrazyGuitarPlayerState() = default;
+    APlayerSave();
+    virtual ~APlayerSave() = default;
 
     uint32_t getHits() const;
     uint32_t getMisses() const;
