@@ -25,7 +25,8 @@ class CRAZYGUITAR_API UPlayerSaveWidget : public UUserWidget {
     void updateDisplayedStreak(const uint32_t& streak);
 
     // Need to be public so blueprint can read and write
-    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget)) UTextBlock* scoreTxt;
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+    UTextBlock* scoreTxt;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UTextBlock* hitsTxt;

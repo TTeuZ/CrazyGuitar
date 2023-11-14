@@ -89,9 +89,6 @@ void AChart::hitChord(const int8_t& chord) {
         playerState->computeHit(APlayerSave::HIT_SCORE);
     else
         playerState->computeMiss();
-
-    UE_LOG(LogTemp, Log, TEXT("Score %f -- Hits: %d -- Misses: %d"), playerState->GetScore(), playerState->getHits(),
-           playerState->getMisses());
 }
 
 void AChart::BeginPlay() {
