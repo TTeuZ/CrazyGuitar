@@ -5,10 +5,6 @@
 
 APlayerSave::APlayerSave() : hits{0}, misses{0}, hitStreak{0} {}
 
-uint32_t APlayerSave::getHits() const { return this->hits; }
-
-uint32_t APlayerSave::getMisses() const { return this->misses; }
-
 void APlayerSave::computeHit(const float adder) {
     this->SetScore(this->GetScore() + adder);
     ++this->hits;

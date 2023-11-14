@@ -16,18 +16,15 @@ class CRAZYGUITAR_API APlayerSave : public APlayerState {
     APlayerSave();
     virtual ~APlayerSave() = default;
 
-    uint32_t getHits() const;
-    uint32_t getMisses() const;
-
     void computeHit(const float adder);
     void computeMiss();
 
     void cleanUpStatus();
 
    private:
+    void updateHUDContent();
+
     uint32_t hits;
     uint32_t misses;
     uint32_t hitStreak;
-
-    void updateHUDContent();
 };
