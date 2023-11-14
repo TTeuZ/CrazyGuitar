@@ -38,7 +38,6 @@ class CRAZYGUITAR_API AChartHUD : public AHUD {
    private:
     UPROPERTY(EditDefaultsOnly, Category = "Widgets")
     TSubclassOf<UUserWidget> playerSaveWidgetClass;
-
     UPROPERTY(EditDefaultsOnly, Category = "Widgets")
     TSubclassOf<UUserWidget> preStartWidgetClass;
 

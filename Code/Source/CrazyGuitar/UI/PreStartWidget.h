@@ -21,7 +21,6 @@ class CRAZYGUITAR_API UPreStartWidget : public UUserWidget {
     // Need to be public so blueprint can read and write
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UTextBlock* titleTxt;
-
     UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
     UTextBlock* infoTxt;
 
