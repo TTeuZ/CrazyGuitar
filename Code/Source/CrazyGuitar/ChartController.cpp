@@ -1,5 +1,8 @@
 #include "ChartController.h"
 
+// Personal Includes
+#include "UI/ChartHUD.h"
+
 // Unreal Includes
 #include "Kismet/GameplayStatics.h"
 
@@ -19,7 +22,12 @@ void AChartController::SetupInputComponent() {
 
 void AChartController::BeginPlay() { this->chart = static_cast<AChart*>(this->GetPawn()); }
 
-void AChartController::startGame() { this->chart->startGame(); }
+void AChartController::startGame() {
+    AChartHUD* HUD{static_cast<AChartHUD*>(this->GetHUD())};
+
+    this->chart->startGame();
+    if (HUD) HUD->displayGameStats();
+}
 
 void AChartController::hitFirstChord() { this->chart->hitChord(0); }
 

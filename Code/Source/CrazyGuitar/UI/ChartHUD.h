@@ -2,6 +2,7 @@
 
 // Personal Includes
 #include "PlayerSaveWidget.h"
+#include "PreStartWidget.h"
 
 // Unreal Includes
 #include "CoreMinimal.h"
@@ -25,16 +26,22 @@ class CRAZYGUITAR_API AChartHUD : public AHUD {
 
     virtual void BeginPlay() override;
 
-    // For some reason, the compiler doesn't allow us to use cstdint classes only here.
+    void displayGameStats();
+
+    // For some reason, the compiler doesn't allow us to use cstdint types only here.
     UFUNCTION()
-    void updateDisplayedState(const float& score, const uint32& hits, const uint32& misses);
+    void updateDisplayedState(const float score, const uint32 hits, const uint32 misses);
 
     UFUNCTION()
-    void updateDisplayedStreak(const uint32& streak);
+    void updateDisplayedStreak(const uint32 streak);
 
    private:
     UPROPERTY(EditDefaultsOnly, Category = "Widgets")
     TSubclassOf<UUserWidget> playerSaveWidgetClass;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+    TSubclassOf<UUserWidget> preStartWidgetClass;
+
     UPlayerSaveWidget* playerSaveWidget;
+    UPreStartWidget* preStartWidget;
 };
