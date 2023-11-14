@@ -57,7 +57,6 @@ class CRAZYGUITAR_API AChart : public APawn {
     Notes* notes;
 
     UMaterial* boxVisualMaterial;
-    UMaterial* stringVisualMaterial;
     UMaterial* hitBoxVisualMaterial;
 
     UPROPERTY(EditAnywhere)

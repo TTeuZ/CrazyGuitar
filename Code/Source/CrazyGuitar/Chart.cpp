@@ -20,7 +20,6 @@ AChart::AChart()
     : chords{nullptr, nullptr, nullptr, nullptr},
       notes{new Notes{}},
       boxVisualMaterial{nullptr},
-      stringVisualMaterial{nullptr},
       hitBoxVisualMaterial{nullptr},
       boxVisual{nullptr},
       visibleComponent{nullptr},
