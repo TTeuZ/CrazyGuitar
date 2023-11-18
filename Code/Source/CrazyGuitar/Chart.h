@@ -27,6 +27,7 @@ class CRAZYGUITAR_API AChart : public APawn {
 
    public:
     constexpr static uint8_t MAX_CHORDS{4};
+    constexpr static float CHORDS_SPACE_PERCENT_IN_CHART{(AChart::MAX_CHORDS - 1.f)/AChart::MAX_CHORDS};
     const static FVector CHART_LOCATION;
     const static FRotator CHART_ROTATION;
     const static FVector CHART_SIZE;
@@ -35,6 +36,9 @@ class CRAZYGUITAR_API AChart : public APawn {
 
     AChart();
     virtual ~AChart();
+
+    std::array<AChord*, AChart::MAX_CHORDS> getChords() const;
+    std::array<float, AChart::MAX_CHORDS> getChordsPositions() const;
 
     void startGame();
 
@@ -51,21 +55,15 @@ class CRAZYGUITAR_API AChart : public APawn {
 
     void createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
                          const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset);
-    void createHitboxVisual(UBoxComponent* const boxComponent,
-                            const ConstructorHelpers::FObjectFinder<UStaticMesh>& cylinderVisualAsset);
     void createChords();
 
-    std::array<AChord*, 4> chords;
+    std::array<AChord*, AChart::MAX_CHORDS> chords;
     Notes* notes;
 
     UMaterial* boxVisualMaterial;
-    UMaterial* stringVisualMaterial;
-    UMaterial* hitBoxVisualMaterial;
 
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* boxVisual;
     UPROPERTY(EditAnywhere)
     UCameraComponent* chartCamera;
-    UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* hitBoxVisual;
 };

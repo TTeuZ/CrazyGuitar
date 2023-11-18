@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CrazyGuitar/Hitbox.h"
 #include "GameFramework/Actor.h"
 #include "Materials/Material.h"
 #include "Math/Vector.h"
@@ -27,15 +28,18 @@ class AChord : public AActor {
     void BeginPlay() override;
 
    private:
-    static constexpr float CHORDS_SPACE_PERCENT_IN_CHART{0.7f};
+    static constexpr float CHORDS_SPACE_PERCENT_IN_CHART{1.f};
     static const FString CHORD_MATERIAL_PATH;
     static const FString CHORD_MESH_PATH;
     static const FVector CHORD_SCALE;
     static const FVector CHORD_SIZE;
 
+    void createHitbox();
+
     uint8_t index;
     void *notes;
     float position;
+    AHitbox *hitbox;
 
     UPROPERTY(EditAnywhere)
     UMaterial *material;
