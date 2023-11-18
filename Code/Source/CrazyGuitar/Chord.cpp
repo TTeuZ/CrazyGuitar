@@ -39,9 +39,9 @@ AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, hitbox{nullptr}, mat
     }
 
     this->SetActorLocation(AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position});
+
     // Log actor location
     UE_LOG(LogTemp, Log, TEXT("AChord::AChord: Actor location: %s"), *this->GetActorLocation().ToString());
-
     UE_LOG(LogTemp, Log, TEXT("AChord::AChord: Chord created"));
 }
 
@@ -52,15 +52,16 @@ void AChord::BeginPlay() {
 
 int AChord::getIndex() const { return this->index; }
 
-void AChord::setIndex(const short int newIndex) {
+float AChord::getPosition() const { return this->position; }
+
+void AChord::setIndex(const uint8_t newIndex) {
     this->index = newIndex;
     this->position = CHORD_POS_JUMP * this->index;
+
     FVector newLocation{AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position}};
     UE_LOG(LogTemp, Log, TEXT("AChord::setIndex: New location: %s"), *newLocation.ToString());
     this->SetActorLocation(newLocation);
 }
-
-float AChord::getPosition() const { return this->position; }
 
 void AChord::createHitbox() {
     this->hitbox = GetWorld()->SpawnActor<AHitbox>(AHitbox::StaticClass());

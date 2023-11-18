@@ -10,14 +10,14 @@ const FVector Notes::DEFAULT_NOTE_LOCATION{
 
 Notes::Notes() : noteSpeed{1} {}
 
-Notes::~Notes() { this->clearNoteActions(); }
-
 void Notes::startNotes() {
     std::list<ANoteAction*>::iterator it{this->noteActions.begin()};
     for (; it != this->noteActions.end(); ++it) (*it)->setCanMove(true);
 }
 
-void Notes::handleHit(const int8_t& chord) {
+bool Notes::handleHit(const int8_t& chord) {
+    bool hitted{false};
+
     std::list<ANoteAction*>::iterator it{this->noteActions.begin()};
     for (; it != this->noteActions.end(); ++it) {
         FVector location{(*it)->getPosition()};
@@ -26,8 +26,10 @@ void Notes::handleHit(const int8_t& chord) {
 
             (*it)->Destroy();
             it = this->noteActions.erase(it);
+            hitted = true;
         }
     }
+    return hitted;
 }
 
 void Notes::removeNote(ANoteAction* const note) {
@@ -57,18 +59,11 @@ void Notes::createNotes(UWorld* const world) {
         aux->setNotes(this);
     }
 }
-
-/**
- * The Unreal Engine cleans up all the actors in game when the game is destroyed
- * So, as the noteActions list holds AActors pointers, if we try to delete them here we get segmentation fault
- */
 void Notes::clearNoteActions() {
-    while (!this->noteActions.empty()) this->noteActions.pop_back();
-    // while (!this->noteActions.empty()) {
-    //     ANoteAction* aux = this->noteActions.back();
-    //     if (!aux->IsPendingKill()) {
-    //         aux->Destroy();
-    //         this->noteActions.pop_back();
-    //     }
-    // }
+    while (!this->noteActions.empty()) {
+        ANoteAction* aux = this->noteActions.back();
+        if (!aux->IsPendingKill()) aux->Destroy();
+
+        this->noteActions.pop_back();
+    }
 }

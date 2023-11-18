@@ -13,16 +13,16 @@ class AChord : public AActor {
     GENERATED_BODY()
 
    public:
-    AChord();
-    virtual ~AChord() = default;
-
     static const FVector CHORD_BASE_POSITION;
     static const FVector CHORD_INITIAL_LOCATION;
 
-    int getIndex() const;
-    void setIndex(const short int newIndex);
+    AChord();
+    virtual ~AChord() = default;
 
+    int getIndex() const;
     float getPosition() const;
+
+    void setIndex(const uint8_t newIndex);
 
    protected:
     void BeginPlay() override;

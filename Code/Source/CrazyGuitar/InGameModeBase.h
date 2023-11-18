@@ -5,12 +5,12 @@
 #include "GameFramework/GameModeBase.h"
 
 // Must be the last include
-#include "CrazyGuitarGameModeBase.generated.h"
+#include "InGameModeBase.generated.h"
 
 UCLASS()
-class CRAZYGUITAR_API ACrazyGuitarGameModeBase : public AGameModeBase {
+class CRAZYGUITAR_API AInGameModeBase : public AGameModeBase {
     GENERATED_BODY()
 
    public:
-    ACrazyGuitarGameModeBase();
+    AInGameModeBase();
 };

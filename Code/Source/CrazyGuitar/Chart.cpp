@@ -1,6 +1,8 @@
 #include "Chart.h"
 
+// Personal includes
 #include "Chord.h"
+#include "PlayerSave.h"
 
 // Unreal includes
 #include "Engine/EngineBaseTypes.h"
@@ -39,7 +41,7 @@ AChart::AChart()
     FVector rootLocation{0.f, 0.f, 0.f};
 
     // Creating the default guitar component and setting as root (Unreal do not allow to use {} in this constructor)
-    UBoxComponent* boxComponent = CreateDefaultSubobject<UBoxComponent>(*CHART_NAME);
+    UBoxComponent* boxComponent = CreateDefaultSubobject<UBoxComponent>(*AChart::CHART_NAME);
     this->RootComponent = boxComponent;
 
     // Creating the visual items for the game
@@ -80,7 +82,14 @@ void AChart::Tick(float deltaTime) {
     Super::Tick(deltaTime); 
 }
 
-void AChart::hitChord(const int8_t& chord) { this->notes->handleHit(chord); }
+void AChart::hitChord(const int8_t& chord) {
+    APlayerSave* playerState{static_cast<APlayerSave*>(this->GetPlayerState())};
+
+    if (this->notes->handleHit(chord))
+        playerState->computeHit(APlayerSave::HIT_SCORE);
+    else
+        playerState->computeMiss();
+}
 
 void AChart::BeginPlay() {
     Super::BeginPlay();
