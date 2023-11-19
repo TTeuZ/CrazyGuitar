@@ -72,7 +72,7 @@ void ANoteAction::move(const float& deltaTime) {
     if (!this->canMove) return;
 
     FVector location{this->getPosition()};
-    location.X -= deltaTime * 200;
+    location.X -= deltaTime * 400;
     this->setPosition(location);
 
     if (location.X < -AChart::CHART_SIZE.Y) this->notes->removeNote(this);
