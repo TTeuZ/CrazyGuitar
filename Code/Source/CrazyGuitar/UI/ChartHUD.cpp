@@ -6,6 +6,11 @@ void AChartHUD::DrawHUD() { Super::DrawHUD(); }
 
 void AChartHUD::Tick(float deltaTime) { Super::Tick(deltaTime); }
 
+void AChartHUD::displayGameStats() {
+    if (this->preStartWidget) this->preStartWidget->SetVisibility(ESlateVisibility::Hidden);
+    if (this->playerSaveWidget) this->playerSaveWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
 void AChartHUD::BeginPlay() {
     Super::BeginPlay();
 
@@ -25,11 +30,6 @@ void AChartHUD::BeginPlay() {
             this->preStartWidget->SetVisibility(ESlateVisibility::Visible);
         }
     }
-}
-
-void AChartHUD::displayGameStats() {
-    if (this->preStartWidget) this->preStartWidget->SetVisibility(ESlateVisibility::Hidden);
-    if (this->playerSaveWidget) this->playerSaveWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
 void AChartHUD::updateDisplayedState(const float score, const uint32 hits, const uint32 misses) {

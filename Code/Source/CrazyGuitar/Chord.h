@@ -36,9 +36,9 @@ class AChord : public AActor {
     float position;
     AHitbox *hitbox;
 
-    UPROPERTY(EditAnywhere)
     UMaterial *material;
+    UStaticMesh *baseVisual;
+
     UPROPERTY(EditAnywhere)
-    UStaticMesh *visual;
-    UStaticMeshComponent *chordVisual;
+    UStaticMeshComponent *visual;
 };

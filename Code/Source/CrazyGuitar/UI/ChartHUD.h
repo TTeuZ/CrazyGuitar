@@ -24,9 +24,9 @@ class CRAZYGUITAR_API AChartHUD : public AHUD {
 
     virtual void Tick(float deltaTime) override;
 
-    virtual void BeginPlay() override;
-
     void displayGameStats();
+
+    virtual void BeginPlay() override;
 
     // For some reason, the compiler doesn't allow us to use cstdint types only here.
     UFUNCTION()

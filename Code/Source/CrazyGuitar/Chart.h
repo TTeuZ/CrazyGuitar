@@ -39,7 +39,7 @@ class CRAZYGUITAR_API AChart : public APawn {
 
     virtual void Tick(float deltaTime) override;
 
-    void hitChord(const int8_t& chord);
+    void hitChord(const uint8_t& chord);
 
    protected:
     virtual void BeginPlay() override;
@@ -52,16 +52,16 @@ class CRAZYGUITAR_API AChart : public APawn {
     const static FRotator CAMERA_ROTATION;
     const static FString CHART_NAME;
 
-    void createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
-                         const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset);
+    void createvisual(const ConstructorHelpers::FObjectFinder<UStaticMesh>& visualAsset);
     void createChords();
 
     std::array<AChord*, AChart::MAX_CHORDS> chords;
     Notes* notes;
 
-    UMaterial* boxVisualMaterial;
+    UMaterial* material;
+
     UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* boxVisual;
+    UStaticMeshComponent* visual;
     UPROPERTY(EditAnywhere)
     UCameraComponent* chartCamera;
 };

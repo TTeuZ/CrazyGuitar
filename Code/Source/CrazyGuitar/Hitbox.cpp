@@ -9,10 +9,10 @@ const FVector AHitbox::HITBOX_SIZE{375.f, 700.f, 2.5f};
 
 AHitbox::AHitbox()
     : noteAction{nullptr},
+      baseVisual{nullptr},
+      material{nullptr},
       collisionBox{CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"))},
-      hitboxVisual{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HitboxVisual"))},
-      hitboxMesh{nullptr},
-      hitboxMaterial{nullptr} {
+      visual{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("visual"))} {
     PrimaryActorTick.bCanEverTick = true;
 
     this->SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
@@ -25,27 +25,27 @@ AHitbox::AHitbox()
     this->collisionBox->OnComponentBeginOverlap.AddDynamic(this, &AHitbox::onOverlapBegin);
     this->collisionBox->OnComponentEndOverlap.AddDynamic(this, &AHitbox::onOverlapEnd);
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> hitboxMeshLoader{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
-    static ConstructorHelpers::FObjectFinder<UMaterial> hitboxMaterialLoader{
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> meshLoader{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
+    static ConstructorHelpers::FObjectFinder<UMaterial> materialLoader{
         TEXT("/Game/StarterContent/Materials/M_Basic_Floor.M_Basic_Floor")};
 
-    if (hitboxMaterialLoader.Succeeded())
-        this->hitboxMaterial = hitboxMaterialLoader.Object;
+    if (materialLoader.Succeeded())
+        this->material = materialLoader.Object;
     else {
-        this->hitboxMaterial = UMaterial::GetDefaultMaterial(MD_Surface);
+        this->material = UMaterial::GetDefaultMaterial(MD_Surface);
         UE_LOG(LogTemp, Warning, TEXT("Cannot find hitbox material"));
     }
 
-    if (hitboxMeshLoader.Succeeded()) {
-        this->hitboxMesh = hitboxMeshLoader.Object;
+    if (meshLoader.Succeeded()) {
+        this->baseVisual = meshLoader.Object;
 
-        this->hitboxVisual->SetStaticMesh(this->hitboxMesh);
-        this->hitboxVisual->SetMaterial(0, this->hitboxMaterial);
-        this->hitboxVisual->SetUsingAbsoluteScale(true);
-        this->hitboxVisual->SetWorldScale3D(FVector{0.05f, 0.15f, 0.25f});
-        this->hitboxVisual->SetRelativeLocation(FVector{-100.f, 0.f, -0.25f * 4.85f});
-        this->hitboxVisual->SetupAttachment(this->RootComponent);
-        this->hitboxVisual->SetCollisionProfileName(TEXT("NoCollision"));
+        this->visual->SetStaticMesh(this->baseVisual);
+        this->visual->SetMaterial(0, this->material);
+        this->visual->SetUsingAbsoluteScale(true);
+        this->visual->SetWorldScale3D(FVector{0.05f, 0.15f, 0.25f});
+        this->visual->SetRelativeLocation(FVector{-100.f, 0.f, -0.25f * 4.85f});
+        this->visual->SetupAttachment(this->RootComponent);
+        this->visual->SetCollisionProfileName(TEXT("NoCollision"));
     } else
         UE_LOG(LogTemp, Warning, TEXT("Cannot find hitbox mesh"));
 }

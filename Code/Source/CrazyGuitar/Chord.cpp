@@ -8,30 +8,30 @@ const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
 const float AChord::CHORD_POS_JUMP{AChart::CHART_SIZE.Z * 2 / AChart::MAX_CHORDS};
 
-AChord::AChord() : index{0}, position{0.f}, hitbox{nullptr}, material{nullptr}, visual{nullptr} {
+AChord::AChord() : index{0}, position{0.f}, hitbox{nullptr}, material{nullptr}, baseVisual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = false;
 
     this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
 
     this->material = LoadObject<UMaterial>(nullptr, *AChord::CHORD_MATERIAL_PATH);
-    this->visual = LoadObject<UStaticMesh>(nullptr, *AChord::CHORD_MESH_PATH);
+    this->baseVisual = LoadObject<UStaticMesh>(nullptr, *AChord::CHORD_MESH_PATH);
 
     if (!this->material) {
         this->material = UMaterial::GetDefaultMaterial(MD_Surface);
         UE_LOG(LogTemp, Warning, TEXT("AChord::AChord: Failed to load material"));
     }
 
-    if (!this->visual) {
+    if (!this->baseVisual) {
         UE_LOG(LogTemp, Warning, TEXT("AChord::AChord: Failed to load mesh"));
         UE_LOG(LogTemp, Error, TEXT("AChord::AChord: Unable to create visual"));
     } else {
         this->SetActorScale3D(FVector{0.02f, 0.02f, AChart::CHART_SCALE.Y});
-        this->chordVisual = this->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ChordVisual"));
-        this->chordVisual->SetStaticMesh(this->visual);
-        this->chordVisual->SetMaterial(0, this->material);
-        this->chordVisual->SetRelativeLocation(FVector{0.f, 0.f, 0.f});
-        this->chordVisual->SetRelativeRotation(FRotator{0.f, 0.f, 90.0f});
-        this->chordVisual->SetupAttachment(this->GetRootComponent());
+        this->visual = this->CreateDefaultSubobject<UStaticMeshComponent>(TEXT("visual"));
+        this->visual->SetStaticMesh(this->baseVisual);
+        this->visual->SetMaterial(0, this->material);
+        this->visual->SetRelativeLocation(FVector{0.f, 0.f, 0.f});
+        this->visual->SetRelativeRotation(FRotator{0.f, 0.f, 90.0f});
+        this->visual->SetupAttachment(this->GetRootComponent());
     }
 
     this->SetActorLocation(AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position});

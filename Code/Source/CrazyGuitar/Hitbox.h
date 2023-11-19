@@ -12,6 +12,7 @@
 #include "Hitbox.generated.h"
 
 class UPrimitiveComponent;
+class UBoxComponent;
 
 UCLASS() class CRAZYGUITAR_API AHitbox : public AActor {
     GENERATED_BODY()
@@ -41,11 +42,11 @@ UCLASS() class CRAZYGUITAR_API AHitbox : public AActor {
 
     ANoteAction* noteAction;
 
-    UPROPERTY(VisibleAnywhere, Category = "Hitbox")
-    class UBoxComponent* collisionBox;
-    UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* hitboxVisual;
+    UStaticMesh* baseVisual;
+    UMaterial* material;
 
-    UStaticMesh* hitboxMesh;
-    UMaterial* hitboxMaterial;
+    UPROPERTY(VisibleAnywhere, Category = "Hitbox")
+    UBoxComponent* collisionBox;
+    UPROPERTY(EditAnywhere)
+    UStaticMeshComponent* visual;
 };
