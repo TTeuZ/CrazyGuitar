@@ -4,7 +4,6 @@
 #include "Chart.h"
 #include "CrazyGuitar/Chord.h"
 
-const float Notes::ZJUMP{(AChart::CHART_SIZE.Z * 2) / (AChart::MAX_CHORDS + 1)};
 const FVector Notes::DEFAULT_NOTE_LOCATION{AChart::CHART_LOCATION.X + AChart::CHART_SIZE.Y * 1.1f,
                                            AChord::CHORD_BASE_POSITION.Z, AChart::CHART_LOCATION.Z + 20.f};
 

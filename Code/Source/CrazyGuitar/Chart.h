@@ -37,9 +37,6 @@ class CRAZYGUITAR_API AChart : public APawn {
     AChart();
     virtual ~AChart();
 
-    std::array<AChord*, AChart::MAX_CHORDS> getChords() const;
-    std::array<float, AChart::MAX_CHORDS> getChordsPositions() const;
-
     void startGame();
 
     virtual void Tick(float deltaTime) override;

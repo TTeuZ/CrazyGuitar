@@ -40,12 +40,6 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     virtual void BeginPlay() override;
 
    private:
-    constexpr static uint8_t HITBOX_SCALE{20};
-    constexpr static uint8_t HITBOX_SIZE{44};
-    constexpr static uint8_t HITBOX_START{154};
-    constexpr static uint8_t HITBOX_END{HITBOX_START - HITBOX_SIZE};
-    constexpr static uint8_t HITBOX_CENTER{HITBOX_START - (HITBOX_SIZE / 2)};
-
     void move(const float& deltaTime);
 
     uint8_t chord;

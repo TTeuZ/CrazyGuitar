@@ -39,7 +39,6 @@ class CRAZYGUITAR_API AHitbox : public AActor {
 
    private:
     const static FVector HITBOX_SIZE;
-    const static FString HITBOX_NAME;
 
     ANoteAction* noteAction;
 

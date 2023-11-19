@@ -6,7 +6,6 @@
 
 const FVector AHitbox::HITBOX_BASE_LOCATION{-500.f, 0.f, 0.f};
 const FVector AHitbox::HITBOX_SIZE{375.f, 700.f, 2.5f};
-const FString AHitbox::HITBOX_NAME{"Hitbox"};
 
 AHitbox::AHitbox()
     : noteAction{nullptr},

@@ -18,13 +18,6 @@ void APlayerSave::computeMiss() {
     this->updateHUDContent();
 }
 
-void APlayerSave::cleanUpStatus() {
-    this->SetScore(0);
-    this->hits = 0;
-    this->misses = 0;
-    this->updateHUDContent();
-}
-
 void APlayerSave::updateHUDContent() {
     // This Way to access the HUD inplies the access to the PlayerController. This can be made because the player
     // controller is instantiated at the world.

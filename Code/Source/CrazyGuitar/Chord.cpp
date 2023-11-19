@@ -4,14 +4,11 @@
 
 const FVector AChord::CHORD_BASE_POSITION{
     FVector{-10.0f, -AChart::CHART_SIZE.Y * 0.85f, AChart::CHART_SIZE.Z* AChart::CHORDS_SPACE_PERCENT_IN_CHART}};
-const FVector AChord::CHORD_INITIAL_LOCATION{AChart::CHART_LOCATION + AChord::CHORD_BASE_POSITION};
 const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M_Metal_Burnished_Steel")};
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
-const FVector AChord::CHORD_SCALE{FVector{0.01f, 0.01f, AChart::CHART_SCALE.Y* AChart::CHORDS_SPACE_PERCENT_IN_CHART}};
-const FVector AChord::CHORD_SIZE{AChord::CHORD_SCALE * 50.f};
 const float AChord::CHORD_POS_JUMP{AChart::CHART_SIZE.Z * 2 / AChart::MAX_CHORDS};
 
-AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, hitbox{nullptr}, material{nullptr}, visual{nullptr} {
+AChord::AChord() : index{0}, position{0.f}, hitbox{nullptr}, material{nullptr}, visual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = false;
 
     this->SetRootComponent(this->CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
@@ -48,10 +45,6 @@ void AChord::BeginPlay() {
     Super::BeginPlay();
     this->createHitbox();
 }
-
-int AChord::getIndex() const { return this->index; }
-
-float AChord::getPosition() const { return this->position; }
 
 void AChord::setIndex(const uint8_t newIndex) {
     this->index = newIndex;

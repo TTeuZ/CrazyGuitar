@@ -59,17 +59,6 @@ AChart::AChart()
 
 AChart::~AChart() { delete this->notes; }
 
-std::array<AChord*, AChart::MAX_CHORDS> AChart::getChords() const { return this->chords; }
-
-std::array<float, AChart::MAX_CHORDS> AChart::getChordsPositions() const {
-    std::array<float, AChart::MAX_CHORDS> positions;
-    std::array<AChord*, AChart::MAX_CHORDS>::const_iterator it{this->chords.begin()};
-    for (uint8_t i{0}; it != this->chords.end(); ++it, ++i) {
-        positions[i] = (*it)->getPosition();
-    }
-    return positions;
-}
-
 void AChart::startGame() {
     this->notes->clearNoteActions();
     this->notes->createNotes(this->GetWorld());

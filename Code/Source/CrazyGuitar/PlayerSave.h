@@ -19,8 +19,6 @@ class CRAZYGUITAR_API APlayerSave : public APlayerState {
     void computeHit(const float adder);
     void computeMiss();
 
-    void cleanUpStatus();
-
    private:
     void updateHUDContent();
 

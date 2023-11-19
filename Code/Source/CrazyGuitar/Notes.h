@@ -30,7 +30,6 @@ class CRAZYGUITAR_API Notes {
     void clearNoteActions();
 
    private:
-    const static float ZJUMP;
     const static FVector DEFAULT_NOTE_LOCATION;
 
     std::list<ANoteAction*> noteActions;
