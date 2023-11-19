@@ -15,6 +15,7 @@ class AChord : public AActor {
    public:
     static const FVector CHORD_BASE_POSITION;
     static const FVector CHORD_INITIAL_LOCATION;
+    static const float CHORD_POS_JUMP;
 
     AChord();
     virtual ~AChord() = default;

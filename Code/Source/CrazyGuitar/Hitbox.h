@@ -14,6 +14,8 @@ class CRAZYGUITAR_API AHitbox : public AActor {
     GENERATED_BODY()
 
    public:
+    const static FVector HITBOX_BASE_LOCATION;
+
     AHitbox();
     virtual ~AHitbox() = default;
 
@@ -32,7 +34,6 @@ class CRAZYGUITAR_API AHitbox : public AActor {
     virtual void BeginPlay() override;
 
    private:
-    const static FVector HITBOX_BASE_LOCATION;
     const static FVector HITBOX_SIZE;
     const static FString HITBOX_NAME;
 

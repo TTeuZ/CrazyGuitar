@@ -9,8 +9,7 @@ const FString AChord::CHORD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M
 const FString AChord::CHORD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cylinder.Shape_Cylinder")};
 const FVector AChord::CHORD_SCALE{FVector{0.01f, 0.01f, AChart::CHART_SCALE.Y * AChart::CHORDS_SPACE_PERCENT_IN_CHART}};
 const FVector AChord::CHORD_SIZE{AChord::CHORD_SCALE * 50.f};
-
-static const float CHORD_POS_JUMP{AChart::CHART_SIZE.Z * 2 / AChart::MAX_CHORDS};
+const float AChord::CHORD_POS_JUMP{AChart::CHART_SIZE.Z * 2 / AChart::MAX_CHORDS};
 
 AChord::AChord() : index{0}, notes{nullptr}, position{0.f}, hitbox{nullptr}, material{nullptr}, visual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = false;
@@ -56,7 +55,7 @@ float AChord::getPosition() const { return this->position; }
 
 void AChord::setIndex(const uint8_t newIndex) {
     this->index = newIndex;
-    this->position = CHORD_POS_JUMP * this->index;
+    this->position = AChord::CHORD_POS_JUMP * this->index;
 
     FVector newLocation{AChord::CHORD_BASE_POSITION - FVector{0.f, 0.f, this->position}};
     UE_LOG(LogTemp, Log, TEXT("AChord::setIndex: New location: %s"), *newLocation.ToString());

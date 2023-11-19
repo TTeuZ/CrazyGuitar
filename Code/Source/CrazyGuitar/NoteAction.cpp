@@ -1,6 +1,7 @@
 #include "NoteAction.h"
 
 // Personal Includes
+#include "Chart.h"
 #include "Notes.h"
 
 // Unreal Includes
@@ -8,6 +9,8 @@
 #include "UObject/ConstructorHelpers.h"
 #include "UObject/Object.h"
 #include "Components/SphereComponent.h"
+
+static constexpr float SCALE{0.5f};
 
 ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
@@ -18,8 +21,8 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
     USphereComponent* sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("NoteAction"));
     this->RootComponent = sphereComponent;
 
-    FVector noteScale{FVector{1.f, 1.f, 1.f} / 2.f};
-    float sphereRadius = 50.f;
+    FVector noteScale{FVector{1.f, 1.f, 1.f} * SCALE};
+    float sphereRadius = 50.f * SCALE;
 
     sphereComponent->InitSphereRadius(sphereRadius);
     sphereComponent->SetCollisionProfileName(TEXT("Note"));
@@ -29,8 +32,10 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
     if (noteVisualAsset.Succeeded()) {
         this->noteVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("NoteVisual"));
         this->noteVisual->SetStaticMesh(noteVisualAsset.Object);
-        this->noteVisual->SetRelativeLocation(FVector{0, 0, -sphereRadius / 2});
-        this->noteVisual->SetRelativeScale3D(noteScale * 0.8f);
+        this->noteVisual->SetRelativeLocation(FVector{0, 0, -sphereRadius});
+        this->noteVisual->SetRelativeScale3D(noteScale);
+        this->noteVisual->SetCollisionProfileName(TEXT("NoCollision"));
+        this->noteVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         this->noteVisual->SetupAttachment(this->RootComponent);
     } else {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find note material"));
@@ -66,15 +71,14 @@ void ANoteAction::playNote() { UE_LOG(LogTemp, Warning, TEXT("Play note")); }
 
 void ANoteAction::BeginPlay() {
     Super::BeginPlay();
-    this->setPosition(FVector{0, 0, 500});
 }
 
 void ANoteAction::move(const float& deltaTime) {
     if (!this->canMove) return;
 
     FVector location{this->getPosition()};
-    location.Y -= deltaTime * 200;
+    location.X -= deltaTime * 200;
     this->setPosition(location);
 
-    if (location.Y < -400) this->notes->removeNote(this);
+    if (location.X < -AChart::CHART_SIZE.Y) this->notes->removeNote(this);
 }

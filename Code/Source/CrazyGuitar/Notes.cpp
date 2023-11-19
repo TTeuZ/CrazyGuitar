@@ -2,11 +2,13 @@
 
 // Personal Includes
 #include "Chart.h"
+#include "CrazyGuitar/Chord.h"
 
 const float Notes::ZJUMP{(AChart::CHART_SIZE.Z * 2) / (AChart::MAX_CHORDS + 1)};
 const FVector Notes::DEFAULT_NOTE_LOCATION{
-    AChart::CHART_LOCATION.X * 0.9f, 200.f,
-    AChart::CHART_LOCATION.Z + AChart::CHART_SIZE.Z - Notes::ZJUMP};
+    AChart::CHART_LOCATION.X + AChart::CHART_SIZE.Y * 1.1f,
+    AChord::CHORD_BASE_POSITION.Z,
+    AChart::CHART_LOCATION.Z + 20.f};
 
 Notes::Notes() : noteSpeed{1} {}
 
@@ -45,17 +47,17 @@ void Notes::createNotes(UWorld* const world) {
         aux = world->SpawnActor<ANoteAction>();
         aux->setChord(FMath::RandRange(0, 3));
 
-        float prevYLocation{0.f};
+        float prevXLocation{0.f};
         float min{0.f};
         if (i >= 1) {
             aux2 = this->noteActions.back();
-            prevYLocation = aux2->getPosition().Y;
+            prevXLocation = aux2->getPosition().X;
             if (aux2->getChord() == aux->getChord()) min = 30.f;
         }
 
-        float yLocation = prevYLocation + FMath::RandRange(min, 60.f);
-        float zLocation = -Notes::ZJUMP * aux->getChord();
-        aux->setPosition(Notes::DEFAULT_NOTE_LOCATION + FVector(0.f, yLocation, zLocation));
+        float xLocation = prevXLocation + FMath::RandRange(min, 60.f);
+        float yLocation = -AChord::CHORD_POS_JUMP * aux->getChord();
+        aux->setPosition(Notes::DEFAULT_NOTE_LOCATION + FVector(xLocation, yLocation, 0.f));
         aux->setNotes(this);
     }
 }
