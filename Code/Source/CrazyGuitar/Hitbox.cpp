@@ -56,20 +56,16 @@ void AHitbox::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
 
 void AHitbox::onOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
                              int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult) {
-    ANoteAction* note{dynamic_cast<ANoteAction*>(otherActor)};
-    this->noteAction = note;
+    this->noteAction = dynamic_cast<ANoteAction*>(otherActor);
 }
 
 void AHitbox::onOverlapEnd(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
                            int32 otherBodyIndex) {
-    // GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, TEXT("Overlap End Function of Hitbox"));
     this->noteAction = nullptr;
 }
 
 bool AHitbox::verifyHit() {
-    if (this->noteAction) {
-        this->noteAction->hit();
-        return true;
-    } else
-        return false;
+    if (!this->noteAction) return false;
+    this->noteAction->hit();
+    return true;
 }
