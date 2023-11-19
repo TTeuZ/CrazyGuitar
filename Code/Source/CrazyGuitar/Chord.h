@@ -13,8 +13,8 @@ class AChord : public AActor {
     GENERATED_BODY()
 
    public:
-    static const FVector CHORD_BASE_POSITION;
-    static const float CHORD_POS_JUMP;
+    const static FVector CHORD_BASE_POSITION;
+    const static float CHORD_POS_JUMP;
 
     AChord();
     virtual ~AChord() = default;
@@ -27,8 +27,8 @@ class AChord : public AActor {
     void BeginPlay() override;
 
    private:
-    static const FString CHORD_MATERIAL_PATH;
-    static const FString CHORD_MESH_PATH;
+    const static FString CHORD_MATERIAL_PATH;
+    const static FString CHORD_MESH_PATH;
 
     void createHitbox();
 
@@ -40,6 +40,5 @@ class AChord : public AActor {
     UMaterial *material;
     UPROPERTY(EditAnywhere)
     UStaticMesh *visual;
-
     UStaticMeshComponent *chordVisual;
 };

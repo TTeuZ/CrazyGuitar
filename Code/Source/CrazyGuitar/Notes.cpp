@@ -7,7 +7,7 @@
 const FVector Notes::DEFAULT_NOTE_LOCATION{AChart::CHART_LOCATION.X + AChart::CHART_SIZE.Y * 1.2f,
                                            AChord::CHORD_BASE_POSITION.Z, AChart::CHART_LOCATION.Z + 20.f};
 
-Notes::Notes() : noteSpeed{1} {}
+Notes::Notes() {}
 
 void Notes::startNotes() {
     std::list<ANoteAction*>::iterator it{this->noteActions.begin()};

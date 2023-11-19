@@ -6,9 +6,13 @@
 APlayerSave::APlayerSave() : hits{0}, misses{0}, hitStreak{0} {}
 
 void APlayerSave::computeHit(const float adder) {
-    this->SetScore(this->GetScore() + adder);
+    uint8_t multiplier{1};
+    if (this->hitStreak >= 10) multiplier = 2;
+
     ++this->hits;
     ++this->hitStreak;
+    this->SetScore(this->GetScore() + (adder * multiplier));
+
     this->updateHUDContent();
 }
 

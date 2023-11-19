@@ -29,10 +29,8 @@ class CRAZYGUITAR_API AChart : public APawn {
     constexpr static uint8_t MAX_CHORDS{4};
     constexpr static float CHORDS_SPACE_PERCENT_IN_CHART{(AChart::MAX_CHORDS - 1.f) / AChart::MAX_CHORDS};
     const static FVector CHART_LOCATION;
-    const static FRotator CHART_ROTATION;
     const static FVector CHART_SIZE;
     const static FVector CHART_SCALE;
-    const static FString CHART_NAME;
 
     AChart();
     virtual ~AChart();
@@ -47,8 +45,12 @@ class CRAZYGUITAR_API AChart : public APawn {
     virtual void BeginPlay() override;
 
    private:
+    const static FString CHARD_MATERIAL_PATH;
+    const static FString CHARD_MESH_PATH;
+    const static FRotator CHART_ROTATION;
     const static FVector CAMERA_LOCATION;
     const static FRotator CAMERA_ROTATION;
+    const static FString CHART_NAME;
 
     void createBoxVisual(UBoxComponent* const boxComponent, const FVector& rootLocation,
                          const ConstructorHelpers::FObjectFinder<UStaticMesh>& boxVisualAsset);
@@ -58,7 +60,6 @@ class CRAZYGUITAR_API AChart : public APawn {
     Notes* notes;
 
     UMaterial* boxVisualMaterial;
-
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* boxVisual;
     UPROPERTY(EditAnywhere)

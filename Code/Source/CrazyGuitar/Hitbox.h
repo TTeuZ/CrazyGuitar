@@ -11,26 +11,24 @@
 // Must be the last include
 #include "Hitbox.generated.h"
 
-UCLASS()
-class CRAZYGUITAR_API AHitbox : public AActor {
+class UPrimitiveComponent;
+
+UCLASS() class CRAZYGUITAR_API AHitbox : public AActor {
     GENERATED_BODY()
 
    public:
-    const static FVector HITBOX_BASE_LOCATION;
-
     AHitbox();
     virtual ~AHitbox() = default;
 
     virtual void Tick(float DeltaTime) override;
 
     UFUNCTION()
-    void onOverlapBegin(class UPrimitiveComponent* overlappedComp, class AActor* otherActor,
-                        class UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep,
-                        const FHitResult& sweepResult);
+    void onOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
+                        int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
 
     UFUNCTION()
-    void onOverlapEnd(class UPrimitiveComponent* overlappedComp, class AActor* otherActor,
-                      class UPrimitiveComponent* otherComp, int32 otherBodyIndex);
+    void onOverlapEnd(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
+                      int32 otherBodyIndex);
 
     bool verifyHit();
 
@@ -38,6 +36,7 @@ class CRAZYGUITAR_API AHitbox : public AActor {
     virtual void BeginPlay() override;
 
    private:
+    const static FVector HITBOX_BASE_LOCATION;
     const static FVector HITBOX_SIZE;
 
     ANoteAction* noteAction;

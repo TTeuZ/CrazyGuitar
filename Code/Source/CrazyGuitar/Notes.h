@@ -33,5 +33,4 @@ class CRAZYGUITAR_API Notes {
     const static FVector DEFAULT_NOTE_LOCATION;
 
     std::list<ANoteAction*> noteActions;
-    uint8_t noteSpeed;
 };

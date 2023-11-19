@@ -9,9 +9,11 @@
 #include "Materials/Material.h"
 #include "Math/UnrealMathUtility.h"
 
+const FVector AChart::CHART_LOCATION{0.f, 0.f, 100.f};
 const FVector AChart::CHART_SIZE{5.f, 550.f, 100.f};
 const FVector AChart::CHART_SCALE{CHART_SIZE / 50.f};
-const FVector AChart::CHART_LOCATION{0.f, 0.f, 100.f};
+const FString AChart::CHARD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut")};
+const FString AChart::CHARD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
 const FRotator AChart::CHART_ROTATION{270.f, 0.f, 270.f};
 const FVector AChart::CAMERA_LOCATION{-150.f, -AChart::CHART_SIZE.Y * 1.2f, 0.f};
 const FRotator AChart::CAMERA_ROTATION{0.f, 75.f, 90.f};
@@ -26,9 +28,8 @@ AChart::AChart()
     this->PrimaryActorTick.bCanEverTick = true;
 
     // Constructors helpers to build the chart
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
-    static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterialLoader{
-        TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut")};
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset{*AChart::CHARD_MESH_PATH};
+    static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterialLoader{*AChart::CHARD_MATERIAL_PATH};
 
     // Setting up the meterials
     if (boxVisualMaterialLoader.Succeeded())
