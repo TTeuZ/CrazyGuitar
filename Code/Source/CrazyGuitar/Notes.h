@@ -23,11 +23,8 @@ class CRAZYGUITAR_API Notes {
 
     void startNotes();
 
-    bool handleHit(const int8_t& chord);
-
     void removeNote(ANoteAction* const note);
 
-    // TODO: Add a paramenter string (maybe) that will be used to create all the notes
     void createNotes(UWorld* const world);
 
     void clearNoteActions();

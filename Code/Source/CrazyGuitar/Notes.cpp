@@ -5,33 +5,14 @@
 #include "CrazyGuitar/Chord.h"
 
 const float Notes::ZJUMP{(AChart::CHART_SIZE.Z * 2) / (AChart::MAX_CHORDS + 1)};
-const FVector Notes::DEFAULT_NOTE_LOCATION{
-    AChart::CHART_LOCATION.X + AChart::CHART_SIZE.Y * 1.1f,
-    AChord::CHORD_BASE_POSITION.Z,
-    AChart::CHART_LOCATION.Z + 20.f};
+const FVector Notes::DEFAULT_NOTE_LOCATION{AChart::CHART_LOCATION.X + AChart::CHART_SIZE.Y * 1.1f,
+                                           AChord::CHORD_BASE_POSITION.Z, AChart::CHART_LOCATION.Z + 20.f};
 
 Notes::Notes() : noteSpeed{1} {}
 
 void Notes::startNotes() {
     std::list<ANoteAction*>::iterator it{this->noteActions.begin()};
     for (; it != this->noteActions.end(); ++it) (*it)->setCanMove(true);
-}
-
-bool Notes::handleHit(const int8_t& chord) {
-    bool hitted{false};
-
-    std::list<ANoteAction*>::iterator it{this->noteActions.begin()};
-    for (; it != this->noteActions.end(); ++it) {
-        FVector location{(*it)->getPosition()};
-        if ((*it)->isHit(chord, location.Y)) {
-            (*it)->playNote();
-
-            (*it)->Destroy();
-            it = this->noteActions.erase(it);
-            hitted = true;
-        }
-    }
-    return hitted;
 }
 
 void Notes::removeNote(ANoteAction* const note) {
@@ -61,6 +42,7 @@ void Notes::createNotes(UWorld* const world) {
         aux->setNotes(this);
     }
 }
+
 void Notes::clearNoteActions() {
     while (!this->noteActions.empty()) {
         ANoteAction* aux = this->noteActions.back();

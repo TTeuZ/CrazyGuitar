@@ -27,7 +27,6 @@ AChart::AChart()
 
     // Constructors helpers to build the chart
     static ConstructorHelpers::FObjectFinder<UStaticMesh> boxVisualAsset{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
-
     static ConstructorHelpers::FObjectFinder<UMaterial> boxVisualMaterialLoader{
         TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut")};
 
@@ -52,7 +51,6 @@ AChart::AChart()
     this->chartCamera->SetRelativeLocation(AChart::CAMERA_LOCATION);
     this->chartCamera->SetWorldRotation(AChart::CAMERA_ROTATION);
     this->chartCamera->SetupAttachment(this->RootComponent);
-
     this->RootComponent->SetRelativeRotation(AChart::CHART_ROTATION);
 
     // Define player controller
@@ -78,14 +76,12 @@ void AChart::startGame() {
     this->notes->startNotes();
 }
 
-void AChart::Tick(float deltaTime) { 
-    Super::Tick(deltaTime); 
-}
+void AChart::Tick(float deltaTime) { Super::Tick(deltaTime); }
 
 void AChart::hitChord(const int8_t& chord) {
     APlayerSave* playerState{static_cast<APlayerSave*>(this->GetPlayerState())};
 
-    if (this->notes->handleHit(chord))
+    if (this->chords[chord]->handleHit())
         playerState->computeHit(APlayerSave::HIT_SCORE);
     else
         playerState->computeMiss();
@@ -122,10 +118,9 @@ void AChart::createBoxVisual(UBoxComponent* const boxComponent, const FVector& r
 }
 
 void AChart::createChords() {
-    AChord* chord;
     FActorSpawnParameters spawnParams;
 
-    USceneComponent *chordRoot = this->RootComponent;
+    USceneComponent* chordRoot = this->RootComponent;
 
     std::array<AChord*, 4>::iterator it{this->chords.begin()};
     for (uint8_t i{1}; it != this->chords.end(); ++it, ++i) {

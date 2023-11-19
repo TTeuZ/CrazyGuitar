@@ -25,6 +25,8 @@ class AChord : public AActor {
 
     void setIndex(const uint8_t newIndex);
 
+    bool handleHit();
+
    protected:
     void BeginPlay() override;
 

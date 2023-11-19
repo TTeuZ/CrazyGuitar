@@ -1,7 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
+// Personal Includes
+#include "NoteAction.h"
+
+// Unreal includes
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "UObject/ObjectMacros.h"
@@ -30,12 +32,16 @@ class CRAZYGUITAR_API AHitbox : public AActor {
     void onOverlapEnd(class UPrimitiveComponent* overlappedComp, class AActor* otherActor,
                       class UPrimitiveComponent* otherComp, int32 otherBodyIndex);
 
+    bool verifyHit();
+
    protected:
     virtual void BeginPlay() override;
 
    private:
     const static FVector HITBOX_SIZE;
     const static FString HITBOX_NAME;
+
+    ANoteAction* noteAction;
 
     UPROPERTY(VisibleAnywhere, Category = "Hitbox")
     class UBoxComponent* collisionBox;

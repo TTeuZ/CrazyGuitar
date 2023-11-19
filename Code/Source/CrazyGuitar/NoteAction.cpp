@@ -62,16 +62,11 @@ void ANoteAction::Tick(float deltaTime) {
     this->move(deltaTime);
 }
 
-bool ANoteAction::isHit(const uint8_t& chordHited, const int32_t& positionHited) const {
-    return this->chord == chordHited && positionHited > -ANoteAction::HITBOX_START &&
-           positionHited < -ANoteAction::HITBOX_END;
-}
+void ANoteAction::hit() { this->notes->removeNote(this); }
 
 void ANoteAction::playNote() { UE_LOG(LogTemp, Warning, TEXT("Play note")); }
 
-void ANoteAction::BeginPlay() {
-    Super::BeginPlay();
-}
+void ANoteAction::BeginPlay() { Super::BeginPlay(); }
 
 void ANoteAction::move(const float& deltaTime) {
     if (!this->canMove) return;

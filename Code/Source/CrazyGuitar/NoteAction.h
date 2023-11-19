@@ -32,7 +32,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
 
     virtual void Tick(float deltaTime) override;
 
-    bool isHit(const uint8_t& chordHited, const int32_t& positionHited) const;
+    void hit();
 
     void playNote();
 

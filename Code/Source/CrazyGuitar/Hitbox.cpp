@@ -1,5 +1,6 @@
 #include "Hitbox.h"
 
+// Unreal Includes
 #include "Components/BoxComponent.h"
 #include "Engine/Engine.h"
 
@@ -8,7 +9,8 @@ const FVector AHitbox::HITBOX_SIZE{375.f, 700.f, 2.5f};
 const FString AHitbox::HITBOX_NAME{"Hitbox"};
 
 AHitbox::AHitbox()
-    : collisionBox{CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"))},
+    : noteAction{nullptr},
+      collisionBox{CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"))},
       hitboxVisual{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HitboxVisual"))},
       hitboxMesh{nullptr},
       hitboxMaterial{nullptr} {
@@ -24,9 +26,9 @@ AHitbox::AHitbox()
     this->collisionBox->OnComponentBeginOverlap.AddDynamic(this, &AHitbox::onOverlapBegin);
     this->collisionBox->OnComponentEndOverlap.AddDynamic(this, &AHitbox::onOverlapEnd);
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> hitboxMeshLoader{
-        TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
-    static ConstructorHelpers::FObjectFinder<UMaterial> hitboxMaterialLoader{TEXT("/Game/StarterContent/Materials/M_Basic_Floor.M_Basic_Floor")};
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> hitboxMeshLoader{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
+    static ConstructorHelpers::FObjectFinder<UMaterial> hitboxMaterialLoader{
+        TEXT("/Game/StarterContent/Materials/M_Basic_Floor.M_Basic_Floor")};
 
     if (hitboxMaterialLoader.Succeeded())
         this->hitboxMaterial = hitboxMaterialLoader.Object;
@@ -49,24 +51,26 @@ AHitbox::AHitbox()
         UE_LOG(LogTemp, Warning, TEXT("Cannot find hitbox mesh"));
 }
 
-void AHitbox::BeginPlay() {
-    Super::BeginPlay();
+void AHitbox::BeginPlay() { Super::BeginPlay(); }
 
-    //
-}
-
-void AHitbox::Tick(float DeltaTime) {
-    Super::Tick(DeltaTime);
-
-    //
-}
+void AHitbox::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
 
 void AHitbox::onOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
                              int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult) {
-    GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Overlap Begin Function of Hitbox"));
+    ANoteAction* note{dynamic_cast<ANoteAction*>(otherActor)};
+    this->noteAction = note;
 }
 
 void AHitbox::onOverlapEnd(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
                            int32 otherBodyIndex) {
-    GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, TEXT("Overlap End Function of Hitbox"));
+    // GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Orange, TEXT("Overlap End Function of Hitbox"));
+    this->noteAction = nullptr;
+}
+
+bool AHitbox::verifyHit() {
+    if (this->noteAction) {
+        this->noteAction->hit();
+        return true;
+    } else
+        return false;
 }

@@ -27,7 +27,7 @@ class CRAZYGUITAR_API AChart : public APawn {
 
    public:
     constexpr static uint8_t MAX_CHORDS{4};
-    constexpr static float CHORDS_SPACE_PERCENT_IN_CHART{(AChart::MAX_CHORDS - 1.f)/AChart::MAX_CHORDS};
+    constexpr static float CHORDS_SPACE_PERCENT_IN_CHART{(AChart::MAX_CHORDS - 1.f) / AChart::MAX_CHORDS};
     const static FVector CHART_LOCATION;
     const static FRotator CHART_ROTATION;
     const static FVector CHART_SIZE;
