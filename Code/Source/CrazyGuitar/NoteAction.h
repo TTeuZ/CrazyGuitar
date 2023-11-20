@@ -40,6 +40,8 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     virtual void BeginPlay() override;
 
    private:
+    static constexpr float SCALE{0.5f};
+
     void move(const float& deltaTime);
 
     uint8_t chord;
@@ -47,5 +49,5 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     Notes* notes;
 
     UPROPERTY(EditAnywhere)
-    UStaticMeshComponent* noteVisual;
+    UStaticMeshComponent* visual;
 };

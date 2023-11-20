@@ -25,7 +25,7 @@ class CRAZYGUITAR_API Notes {
 
     void removeNote(ANoteAction* const note);
 
-    void createNotes(UWorld* const world, const int32_t n = 50);
+    void createNotes(UWorld* const world, const uint32_t n = 50);
 
     void clearNoteActions();
 

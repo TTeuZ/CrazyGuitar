@@ -10,33 +10,30 @@
 #include "UObject/Object.h"
 #include "Components/SphereComponent.h"
 
-static constexpr float SCALE{0.5f};
-
 ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
 
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> noteVisualAsset{
-        TEXT("/Game/Shapes/Shape_Sphere.Shape_Sphere")};
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> visualAsset{TEXT("/Game/Shapes/Shape_Sphere.Shape_Sphere")};
 
     USphereComponent* sphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("NoteAction"));
     this->RootComponent = sphereComponent;
 
-    FVector noteScale{FVector{1.f, 1.f, 1.f} * SCALE};
-    float sphereRadius = 50.f * SCALE;
+    FVector noteScale{FVector{1.f, 1.f, 1.f} * ANoteAction::SCALE};
+    float sphereRadius = 50.f * ANoteAction::SCALE;
 
     sphereComponent->InitSphereRadius(sphereRadius);
     sphereComponent->SetCollisionProfileName(TEXT("Note"));
     sphereComponent->SetRelativeLocation(FVector{0.f, 0.f, 0.f});
     sphereComponent->SetRelativeScale3D(noteScale);
 
-    if (noteVisualAsset.Succeeded()) {
-        this->noteVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("NoteVisual"));
-        this->noteVisual->SetStaticMesh(noteVisualAsset.Object);
-        this->noteVisual->SetRelativeLocation(FVector{0, 0, -sphereRadius});
-        this->noteVisual->SetRelativeScale3D(noteScale);
-        this->noteVisual->SetCollisionProfileName(TEXT("NoCollision"));
-        this->noteVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-        this->noteVisual->SetupAttachment(this->RootComponent);
+    if (visualAsset.Succeeded()) {
+        this->visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("visual"));
+        this->visual->SetStaticMesh(visualAsset.Object);
+        this->visual->SetRelativeLocation(FVector{0, 0, -sphereRadius});
+        this->visual->SetRelativeScale3D(noteScale);
+        this->visual->SetCollisionProfileName(TEXT("NoCollision"));
+        this->visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        this->visual->SetupAttachment(this->RootComponent);
     } else {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find note material"));
     }

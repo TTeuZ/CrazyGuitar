@@ -19,7 +19,7 @@ void Notes::removeNote(ANoteAction* const note) {
     note->Destroy();
 }
 
-void Notes::createNotes(UWorld* const world, const int32_t n) {
+void Notes::createNotes(UWorld* const world, const uint32_t n) {
     ANoteAction* aux{nullptr};
     ANoteAction* aux2{nullptr};
 
