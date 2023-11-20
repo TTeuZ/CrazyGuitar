@@ -3,6 +3,7 @@
 // Personal Includes
 #include "Chart.h"
 #include "Notes.h"
+#include "PlayerSave.h"
 
 // Unreal Includes
 #include "Materials/Material.h"
@@ -72,5 +73,11 @@ void ANoteAction::move(const float& deltaTime) {
     location.X -= deltaTime * 300;
     this->setPosition(location);
 
-    if (location.X < -AChart::CHART_SIZE.Y) this->notes->removeNote(this);
+    if (location.X < -AChart::CHART_SIZE.Y) {
+        APlayerSave* playerState{
+            static_cast<APlayerSave*>(this->GetWorld()->GetFirstPlayerController()->GetPawn()->GetPlayerState())};
+
+        if (playerState) playerState->computeMiss();
+        this->notes->removeNote(this);
+    }
 }

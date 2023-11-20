@@ -9,7 +9,6 @@
 #include "NoteAction.generated.h"
 
 class Notes;
-
 UCLASS()
 class CRAZYGUITAR_API ANoteAction : public AActor {
     GENERATED_BODY()
