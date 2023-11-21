@@ -34,8 +34,10 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
         this->noteVisual->SetStaticMesh(noteVisualAsset.Object);
         this->noteVisual->SetRelativeLocation(FVector{0, 0, -sphereRadius});
         this->noteVisual->SetRelativeScale3D(noteScale);
+        this->noteVisual->SetCachedMaxDrawDistance(1500.f);
         this->noteVisual->SetCollisionProfileName(TEXT("NoCollision"));
         this->noteVisual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        this->noteVisual->SetCastShadow(false);
         this->noteVisual->SetupAttachment(this->RootComponent);
     } else {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find note material"));
@@ -72,7 +74,7 @@ void ANoteAction::move(const float& deltaTime) {
     if (!this->canMove) return;
 
     FVector location{this->getPosition()};
-    location.X -= deltaTime * 300;
+    location.X -= deltaTime * this->notes->getBPM() * 4.f;
     this->setPosition(location);
 
     if (location.X < -AChart::CHART_SIZE.Y) this->notes->removeNote(this);

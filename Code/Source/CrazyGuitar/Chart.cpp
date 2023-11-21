@@ -2,6 +2,7 @@
 
 // Personal includes
 #include "Chord.h"
+#include "CrazyGuitar/Song.h"
 #include "PlayerSave.h"
 
 // Unreal includes
@@ -10,12 +11,12 @@
 #include "Math/UnrealMathUtility.h"
 
 const FVector AChart::CHART_LOCATION{0.f, 0.f, 100.f};
-const FVector AChart::CHART_SIZE{5.f, 550.f, 100.f};
+const FVector AChart::CHART_SIZE{5.f, 650.f, 100.f};
 const FVector AChart::CHART_SCALE{CHART_SIZE / 50.f};
 const FString AChart::CHARD_MATERIAL_PATH{TEXT("/Game/StarterContent/Materials/M_Wood_Walnut.M_Wood_Walnut")};
 const FString AChart::CHARD_MESH_PATH{TEXT("/Game/Shapes/Shape_Cube.Shape_Cube")};
 const FRotator AChart::CHART_ROTATION{270.f, 0.f, 270.f};
-const FVector AChart::CAMERA_LOCATION{-150.f, -AChart::CHART_SIZE.Y * 1.3f, 0.f};
+const FVector AChart::CAMERA_LOCATION{-120.f, -AChart::CHART_SIZE.Y * 1.1f, 0.f};
 const FRotator AChart::CAMERA_ROTATION{0.f, 75.f, 90.f};
 const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 
@@ -58,8 +59,19 @@ AChart::AChart()
 AChart::~AChart() { delete this->notes; }
 
 void AChart::startGame() {
-    this->notes->clearNoteActions();
-    this->notes->createNotes(this->GetWorld());
+    Song s{"swallowYourSoul"};
+    UE_LOG(LogTemp, Log, TEXT("AChart::startGame: Song loaded"));
+
+    this->notes->setWorld(this->GetWorld());
+
+    std::list<std::array<uint16_t, 3>> songNotes{s.getNotes()};
+    if (songNotes.empty()) {
+        UE_LOG(LogTemp, Error, TEXT("AChart::startGame: No notes found"));
+        this->notes->createProceduralNotes();
+    } else {
+        UE_LOG(LogTemp, Log, TEXT("AChart::startGame: %d notes found"), songNotes.size());
+        this->notes->createSongNotes(&s);
+    }
     this->notes->startNotes();
 }
 
@@ -82,7 +94,7 @@ void AChart::BeginPlay() {
 }
 
 void AChart::createvisual(const ConstructorHelpers::FObjectFinder<UStaticMesh>& visualAsset) {
-    FVector visualScale{AChart::CHART_SCALE};
+    FVector visualScale{AChart::CHART_SCALE * FVector{1.f, 1.f, 1.f}};
     FVector rootLocation{0.f, 0.f, 0.f};
     UBoxComponent* boxComponent{static_cast<UBoxComponent*>(this->GetRootComponent())};
 

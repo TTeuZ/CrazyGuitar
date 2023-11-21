@@ -1,32 +1,43 @@
 #pragma once
 
+#include <array>
 #include <cstdint>
+#include <list>
 #include <string>
-#include "CrazyGuitar/Notes.h"
+
+#include "Containers/UnrealString.h"
+#include "Notes.h"
+
 class Song {
 public:
     Song();
-    Song(const std::string dirPath);
-    Song(const std::string name, const std::string artist, const std::string genre, const uint16_t length, const uint16_t bpm);
-    virtual ~Song() = default;
-
-    std::string getDirPath() const;
-    void setDirPath(const std::string newDirPath);
+    Song(const FString dirPath);
+    Song(const std::string name, const std::string artist, const std::string genre, const uint16_t length,
+         const uint16_t bpm);
+    virtual ~Song();
 
     std::string getLength() const;
-
     int getBPM() const;
+    std::list<std::array<uint16_t, 3>> const &getNotes() const;
 
 private:
-    void readSongInfo();
-    void readSongNotes();
+    const static FString BASE_DIR_PATH;
 
-    std::string dirPath;
+    void setDirPath(const FString newDirPath);
+    void setLength(std::string newLength);
+    void setLength(int32_t newLength);
+
+    bool dirExists(const FString path) const;
+
+    void readInfo();
+    void readNotes();
+
+    FString dirPath;
     std::string name;
     std::string artist;
     std::string genre;
-    uint16_t length;
+    int32_t length;
     uint16_t bpm;
 
-    Notes *notes;
+    std::list<std::array<uint16_t, 3>> *notes;
 };

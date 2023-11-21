@@ -1,14 +1,6 @@
-NAME
-Swallow Your Soul
----
-ARTIST
-Sorry For Nothing
----
-GENRE
-Rock
----
-LENGHT
-2:44
----
-BPM
-100
+# Song Informartions
+name=Swallow Your Soul
+artist=Sorry For Nothing
+genre=Rock
+length=2:44
+bpm=100
