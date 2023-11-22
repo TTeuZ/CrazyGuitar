@@ -12,7 +12,7 @@ AHitbox::AHitbox()
       baseVisual{nullptr},
       material{nullptr},
       collisionBox{CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"))},
-      visual{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("visual"))} {
+      visual{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HitVisual"))} {
     PrimaryActorTick.bCanEverTick = true;
 
     this->SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
@@ -43,7 +43,7 @@ AHitbox::AHitbox()
         this->visual->SetMaterial(0, this->material);
         this->visual->SetUsingAbsoluteScale(true);
         this->visual->SetWorldScale3D(FVector{0.05f, 0.15f, 0.25f});
-        this->visual->SetRelativeLocation(FVector{-100.f, 0.f, -0.25f * 4.85f});
+        this->visual->SetRelativeLocation(FVector{-100.f, 0.f, -1.f});
         this->visual->SetupAttachment(this->RootComponent);
         this->visual->SetCollisionProfileName(TEXT("NoCollision"));
     } else

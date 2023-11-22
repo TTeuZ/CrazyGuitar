@@ -16,7 +16,7 @@
 	],
 	"TargetPlatforms": [
 		"LinuxNoEditor",
-		"LinuxAArch64NoEditor",
-		"WindowsNoEditor"
+		"WindowsNoEditor",
+		"HoloLens"
 	]
 }

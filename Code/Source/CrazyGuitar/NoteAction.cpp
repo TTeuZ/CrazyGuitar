@@ -28,12 +28,14 @@ ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
     sphereComponent->SetRelativeScale3D(noteScale);
 
     if (visualAsset.Succeeded()) {
-        this->visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("visual"));
+        this->visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("NoteVisual"));
         this->visual->SetStaticMesh(visualAsset.Object);
         this->visual->SetRelativeLocation(FVector{0, 0, -sphereRadius});
         this->visual->SetRelativeScale3D(noteScale);
+        this->visual->SetCachedMaxDrawDistance(1500.f);
         this->visual->SetCollisionProfileName(TEXT("NoCollision"));
         this->visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        this->visual->SetCastShadow(false);
         this->visual->SetupAttachment(this->RootComponent);
     } else {
         UE_LOG(LogTemp, Warning, TEXT("Cannot find note material"));
@@ -70,7 +72,7 @@ void ANoteAction::move(const float& deltaTime) {
     if (!this->canMove) return;
 
     FVector location{this->getPosition()};
-    location.X -= deltaTime * 300;
+    location.X -= deltaTime * this->notes->getBPM() * 4.f;
     this->setPosition(location);
 
     if (location.X < -AChart::CHART_SIZE.Y) {
