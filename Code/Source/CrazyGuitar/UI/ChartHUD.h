@@ -30,10 +30,10 @@ class CRAZYGUITAR_API AChartHUD : public AHUD {
 
     // For some reason, the compiler doesn't allow us to use cstdint types only here.
     UFUNCTION()
-    void updateDisplayedState(const float score, const uint32 hits, const uint32 misses);
+    void updateDisplayedState(const float& score, const uint32& hits, const uint32& misses);
 
     UFUNCTION()
-    void updateDisplayedStreak(const uint32 streak);
+    void updateDisplayedStreak(const uint32& streak);
 
    private:
     UPROPERTY(EditDefaultsOnly, Category = "Widgets")

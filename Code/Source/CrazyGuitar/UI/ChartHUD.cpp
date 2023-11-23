@@ -32,10 +32,10 @@ void AChartHUD::BeginPlay() {
     }
 }
 
-void AChartHUD::updateDisplayedState(const float score, const uint32 hits, const uint32 misses) {
+void AChartHUD::updateDisplayedState(const float& score, const uint32& hits, const uint32& misses) {
     if (this->playerSaveWidget) this->playerSaveWidget->updateDisplayedState(score, hits, misses);
 }
 
-void AChartHUD::updateDisplayedStreak(const uint32 streak) {
+void AChartHUD::updateDisplayedStreak(const uint32& streak) {
     if (this->playerSaveWidget) this->playerSaveWidget->updateDisplayedStreak(streak);
 }
