@@ -30,9 +30,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     void setPosition(const FVector& position);
 
     virtual void Tick(float deltaTime) override;
-
     void hit();
-
     void playNote();
 
    protected:

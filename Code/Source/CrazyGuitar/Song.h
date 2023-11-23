@@ -14,7 +14,6 @@ class CRAZYGUITAR_API Song {
    public:
     Song();
     Song(const FString& dirPath);
-
     virtual ~Song() = default;
 
     uint16_t getBPM() const;
@@ -31,9 +30,7 @@ class CRAZYGUITAR_API Song {
     const static FString BASE_DIR_PATH;
 
     void readDirPath();
-
     bool dirExists(const FString& path) const;
-
     void readInfo();
     void readNotes();
 

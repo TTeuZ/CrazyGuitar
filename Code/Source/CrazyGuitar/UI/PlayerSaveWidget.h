@@ -19,9 +19,7 @@ class CRAZYGUITAR_API UPlayerSaveWidget : public UUserWidget {
     virtual ~UPlayerSaveWidget() = default;
 
     virtual void NativeConstruct() override;
-
     void updateDisplayedState(const float& score, const uint32_t& hits, const uint32_t& misses);
-
     void updateDisplayedStreak(const uint32_t& streak);
 
     // Need to be public so blueprint can read and write

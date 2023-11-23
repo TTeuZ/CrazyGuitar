@@ -21,17 +21,13 @@ class CRAZYGUITAR_API AChartHUD : public AHUD {
     virtual ~AChartHUD() = default;
 
     virtual void DrawHUD() override;
-
     virtual void Tick(float deltaTime) override;
-
     void displayGameStats();
-
     virtual void BeginPlay() override;
 
     // For some reason, the compiler doesn't allow us to use cstdint types only here.
     UFUNCTION()
     void updateDisplayedState(const float& score, const uint32& hits, const uint32& misses);
-
     UFUNCTION()
     void updateDisplayedStreak(const uint32& streak);
 

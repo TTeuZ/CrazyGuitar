@@ -37,9 +37,7 @@ class CRAZYGUITAR_API AChart : public APawn {
     virtual ~AChart();
 
     void startGame();
-
     virtual void Tick(float deltaTime) override;
-
     void hitChord(const uint8_t& chord);
 
    protected:

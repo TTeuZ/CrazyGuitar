@@ -28,6 +28,10 @@ class CRAZYGUITAR_API Notes {
 
     uint16_t getBPM() const;
 
+    /*
+     *   Unreal Engine enforce us to use the name newChord instead of chord, otherwise
+     *   we received a compilation error
+     */
     void setWorld(UWorld* const newWorld);
     void setBPM(const uint16_t newBPM);
 
