@@ -2,7 +2,6 @@
 
 // Personal includes
 #include "Chord.h"
-#include "CrazyGuitar/Song.h"
 #include "PlayerSave.h"
 
 // Unreal includes
@@ -23,6 +22,7 @@ const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 AChart::AChart()
     : chords{nullptr, nullptr, nullptr, nullptr},
       notes{new Notes{}},
+      song{nullptr},
       material{nullptr},
       visual{nullptr},
       chartCamera{nullptr} {
@@ -59,18 +59,18 @@ AChart::AChart()
 AChart::~AChart() { delete this->notes; }
 
 void AChart::startGame() {
-    Song s{"swallowYourSoul"};
+    this->song = new Song{"swallowYourSoul"};
     UE_LOG(LogTemp, Log, TEXT("AChart::startGame: Song loaded"));
 
     this->notes->setWorld(this->GetWorld());
 
-    std::list<std::array<uint16_t, 3>> songNotes{s.getRawNotes()};
+    std::list<std::array<uint16_t, 3>> songNotes{this->song->getRawNotes()};
     if (songNotes.empty()) {
         UE_LOG(LogTemp, Error, TEXT("AChart::startGame: No notes found"));
         this->notes->createProceduralNotes();
     } else {
         UE_LOG(LogTemp, Log, TEXT("AChart::startGame: %d notes found"), songNotes.size());
-        this->notes->createSongNotes(s);
+        this->notes->createSongNotes(*this->song);
     }
     this->notes->startNotes();
 }

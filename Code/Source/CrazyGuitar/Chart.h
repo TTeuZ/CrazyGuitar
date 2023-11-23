@@ -8,6 +8,7 @@
 
 // Personal includes
 #include "Notes.h"
+#include "Song.h"
 #include "Chord.h"
 
 // Unreal includes
@@ -57,9 +58,9 @@ class CRAZYGUITAR_API AChart : public APawn {
 
     std::array<AChord*, AChart::MAX_CHORDS> chords;
     Notes* notes;
+    Song* song;
 
     UMaterial* material;
-
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent* visual;
     UPROPERTY(EditAnywhere)
