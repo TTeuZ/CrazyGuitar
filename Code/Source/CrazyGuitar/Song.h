@@ -14,12 +14,9 @@ class CRAZYGUITAR_API Song {
    public:
     Song();
     Song(const FString& dirPath);
-    Song(const std::string& name, const std::string& artist, const std::string& genre, const uint16_t length,
-         const uint16_t bpm);
 
     virtual ~Song() = default;
 
-    std::string getLength() const;
     uint16_t getBPM() const;
     const std::list<std::array<uint16_t, 3>>& getRawNotes() const;
 

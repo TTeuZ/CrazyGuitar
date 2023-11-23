@@ -19,26 +19,6 @@ Song::Song(const FString& dirPath) : Song{} {
     this->readDirPath();
 }
 
-Song::Song(const std::string& name, const std::string& artist, const std::string& genre, const uint16_t length,
-           const uint16_t bpm)
-    : dirPath{""}, name{name}, artist{artist}, genre{genre}, length{length}, bpm{bpm} {}
-
-std::string Song::getLength() const {
-    int32_t minutes{this->length / 60};
-    int32_t seconds{this->length % 60};
-    std::string strLength{""};
-
-    if (minutes < 10) strLength += "0";
-
-    strLength += std::to_string(minutes);
-    strLength += ":";
-
-    if (seconds < 10) strLength += "0";
-
-    strLength += std::to_string(seconds);
-    return strLength;
-}
-
 uint16_t Song::getBPM() const { return this->bpm; }
 
 const std::list<std::array<uint16_t, 3>>& Song::getRawNotes() const { return this->rawNotes; }

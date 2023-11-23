@@ -35,11 +35,12 @@ class CRAZYGUITAR_API Notes {
     void removeNote(ANoteAction* const note);
     void createProceduralNotes(const uint32_t n = 100);
     void createSongNotes(const Song& song);
-    bool addNoteAction(const uint8_t chord, const float position);
     void clearNoteActions();
 
    private:
     const static FVector DEFAULT_NOTE_LOCATION;
+
+    bool addNoteAction(const uint8_t chord, const float position);
 
     uint16_t bpm;
     UWorld* world;

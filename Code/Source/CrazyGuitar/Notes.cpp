@@ -59,6 +59,15 @@ void Notes::createSongNotes(const Song& song) {
     this->bpm = song.getBPM();
 }
 
+void Notes::clearNoteActions() {
+    while (!this->noteActions.empty()) {
+        ANoteAction* aux{this->noteActions.back()};
+        if (!aux->IsPendingKill()) aux->Destroy();
+
+        this->noteActions.pop_back();
+    }
+}
+
 bool Notes::addNoteAction(const uint8_t chord, const float position) {
     float lastXLocation{DEFAULT_NOTE_LOCATION.X};
 
@@ -82,13 +91,4 @@ bool Notes::addNoteAction(const uint8_t chord, const float position) {
     this->noteActions.push_back(aux);
 
     return true;
-}
-
-void Notes::clearNoteActions() {
-    while (!this->noteActions.empty()) {
-        ANoteAction* aux{this->noteActions.back()};
-        if (!aux->IsPendingKill()) aux->Destroy();
-
-        this->noteActions.pop_back();
-    }
 }
