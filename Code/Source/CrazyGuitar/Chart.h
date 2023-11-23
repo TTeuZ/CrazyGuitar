@@ -53,7 +53,7 @@ class CRAZYGUITAR_API AChart : public APawn {
     const static FRotator CAMERA_ROTATION;
     const static FString CHART_NAME;
 
-    void createvisual(const ConstructorHelpers::FObjectFinder<UStaticMesh>& visualAsset);
+    void createVisual(const ConstructorHelpers::FObjectFinder<UStaticMesh>& visualAsset);
     void createChords();
 
     std::array<AChord*, AChart::MAX_CHORDS> chords;

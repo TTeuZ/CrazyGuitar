@@ -38,7 +38,7 @@ void Song::setDirPath(const FString& newDirPath) {
     this->dirPath = newDirPath;
 }
 
-void Song::setLength(std::string& newLength) {
+void Song::setLength(const std::string& newLength) {
     int32_t minutes{std::stoi(newLength.substr(0, newLength.find(':')))};
     int32_t seconds{std::stoi(newLength.substr(newLength.find(':') + 1, newLength.length()))};
     this->length = minutes * 60 + seconds;
@@ -90,8 +90,8 @@ void Song::readInfo() {
         if (line == "") continue;
         if (line[0] == '#') continue;
 
-        std::string key = line.substr(0, line.find('='));
-        std::string value = line.substr(line.find('=') + 1, line.length());
+        std::string key{line.substr(0, line.find('='))};
+        std::string value{line.substr(line.find('=') + 1, line.length())};
 
         // Not possible to use switch with string
         if (key == "name")
@@ -116,9 +116,9 @@ void Song::readInfo() {
 }
 
 void Song::readNotes() {
-    uint8_t chord;
-    uint16_t size;
-    uint16_t position;
+    uint8_t chord{0};
+    uint16_t size{0};
+    uint16_t position{0};
 
     UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Reading notes"));
 

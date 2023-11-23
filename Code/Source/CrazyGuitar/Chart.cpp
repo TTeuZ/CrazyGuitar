@@ -42,7 +42,7 @@ AChart::AChart()
     this->RootComponent = boxComponent;
 
     // Creating the visual items for the game
-    this->createvisual(visualAsset);
+    this->createVisual(visualAsset);
 
     // Creating the camera
     this->chartCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -87,7 +87,7 @@ void AChart::BeginPlay() {
     this->createChords();
 }
 
-void AChart::createvisual(const ConstructorHelpers::FObjectFinder<UStaticMesh>& visualAsset) {
+void AChart::createVisual(const ConstructorHelpers::FObjectFinder<UStaticMesh>& visualAsset) {
     FVector visualScale{AChart::CHART_SCALE * FVector{1.f, 1.f, 1.f}};
     FVector rootLocation{0.f, 0.f, 0.f};
     UBoxComponent* boxComponent{static_cast<UBoxComponent*>(this->GetRootComponent())};
@@ -100,14 +100,14 @@ void AChart::createvisual(const ConstructorHelpers::FObjectFinder<UStaticMesh>& 
 
     // Cria e posiciona um componente de malha (MeshComponent)
     this->visual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("VisualRepresentation"));
-    visual->SetupAttachment(boxComponent);
+    this->visual->SetupAttachment(boxComponent);
     if (visualAsset.Succeeded()) {
-        visual->SetStaticMesh(visualAsset.Object);
-        visual->SetRelativeLocation(FVector{0.f, 0.f, -AChart::CHART_SIZE.Z});
+        this->visual->SetStaticMesh(visualAsset.Object);
+        this->visual->SetRelativeLocation(FVector{0.f, 0.f, -AChart::CHART_SIZE.Z});
         // fit the box to the root component size
-        visual->SetWorldScale3D(visualScale);
-        visual->SetMaterial(0, this->material);
-        visual->SetCastShadow(false);
+        this->visual->SetWorldScale3D(visualScale);
+        this->visual->SetMaterial(0, this->material);
+        this->visual->SetCastShadow(false);
     }
 }
 
