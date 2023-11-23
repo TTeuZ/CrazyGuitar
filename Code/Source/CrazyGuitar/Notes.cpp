@@ -69,7 +69,10 @@ void Notes::clearNoteActions() {
 }
 
 bool Notes::addNoteAction(const uint8_t chord, const float position) {
-    float lastXLocation{DEFAULT_NOTE_LOCATION.X};
+    float startLocation{DEFAULT_NOTE_LOCATION.X};
+    // Arredonda a localização para o começo do compasso
+    startLocation = static_cast<int>(startLocation / (this->bpm)) * (this->bpm) - (this->bpm / 2.f);
+    float lastXLocation{startLocation};
 
     if (!this->noteActions.empty()) {
         ANoteAction* last{this->noteActions.back()};

@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
+#include <list>
 
 // Unreal includes
 #include "Containers/UnrealString.h"
@@ -116,9 +117,18 @@ void Song::readInfo() {
 }
 
 void Song::readNotes() {
-    uint8_t chord{0};
-    uint16_t size{0};
-    uint16_t position{0};
+    // uint8_t chord{0};
+    // uint16_t size{0};
+    // uint16_t position{0};
+    // uint16_t tempo{1};
+    typedef struct Note {
+        uint8_t chord;
+        uint16_t size;
+        uint16_t position;
+        uint16_t tempo;
+    } Note;
+    uint16_t repeat{1}, notesToRepeat{1};
+    std::list<Note*> notes;
 
     UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Reading notes"));
 
@@ -128,23 +138,87 @@ void Song::readNotes() {
 
     if (!file.is_open()) return;
 
+    // Inicia a leitura das notas
     while (!file.eof()) {
         std::string line;
         std::getline(file, line);
+        UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Line: %s"), *FString(line.c_str()));
 
-        if (line == "") continue;
-        if (line[0] == '#') continue;
+        // Trata linhas vazias e comentários
+        if (line == "") {
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Empty line"));
+            continue;
+        }
+        if (line[0] == '#') {
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Comment line"));
+            continue;
+        }
 
-        chord = std::stoi(line.substr(0, line.find(' ')));
-        line = line.substr(line.find(' ') + 1, line.length());
-        size = std::stoi(line.substr(0, line.find(' ')));
-        line = line.substr(line.find(' ') + 1, line.length());
-        position = std::stoi(line.substr(0, line.find(' '))) * (this->bpm / 8);
-        UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Chord: %d, Size: %d, Position: %d"), chord, size, position);
+        // Trata linhas de repetição
+        // - Linha de repetição: * <número de repetições> <número de notas a serem repetidas>
+        // - Exemplo: * 2 4
+        // Caso nao tenha repetição, o número de repetições é 1 automaticamente
+        if (line[0] == '*') {
+            repeat = std::stoi(line.substr(line.find(' ') + 1, line.length()));
+            line = line.substr(line.find(' ') + 1, line.length());
+            UE_LOG(LogTemp, Log, TEXT("%s"), *FString(line.c_str()));
+            if (line != "")
+                notesToRepeat = std::stoi(line.substr(line.find(' ') + 1, line.length()));
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Repeat line"));
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Repeat: %d"), repeat);
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Notes to repeat: %d"), notesToRepeat);
+            continue;
+        }
 
-        if (file.fail()) break;
+        // Caso tenha passado pelas verificações acima, a linha é uma linha de nota
+        UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Note line"));
 
-        this->rawNotes.push_back({chord, size, position});
+        // Le as informacoes de cada nota e as adiciona na lista de notas a serem repetidas
+        // Caso so tenha uma nota, so realiza a leitura uma vez
+        // - Linha de nota: <acorde> <tamanho> <posição> <tempo>
+        for (uint16_t i{1}; i <= notesToRepeat; ++i) {
+            Note* note = new Note;
+            note->chord = std::stoi(line.substr(0, line.find(' ')));
+            line = line.substr(line.find(' ') + 1, line.length());
+
+            note->size = std::stoi(line.substr(0, line.find(' ')));
+            line = line.substr(line.find(' ') + 1, line.length());
+
+            note->position = std::stoi(line.substr(0, line.find(' ')));
+            line = line.substr(line.find(' ') + 1, line.length());
+
+            if (line != "") note->tempo = std::stoi(line);
+
+            note->position *= this->bpm / note->tempo;
+
+            // UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Chord: %d, Size: %d, Position: %d"), chord, size, position);
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Chord: %d, Size: %d, Position: %d"), note->chord, note->size,
+                   note->position);
+            if (i < notesToRepeat) {
+                std::getline(file, line);
+            }
+            notes.push_back(note);
+        }
+
+        // Adiciona as notas a lista de notas
+        // Caso tenha que repetir, repete
+        // Caso nao tenha que repetir, adiciona uma vez
+        for (uint16_t i{1}; i <= repeat; ++i) {
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Repeat: %d"), i);
+            std::list<Note*>::iterator it{notes.begin()};
+            for (; it != notes.end(); ++it) {
+                this->rawNotes.push_back({(*it)->chord, (*it)->size, (*it)->position});
+            }
+        }
+        repeat = 1;
+        notesToRepeat = 1;
+
+        // Limpa a lista de notas a serem repetidas
+        std::list<Note*>::iterator it{notes.begin()};
+        for (; it != notes.end(); ++it) {
+            delete *it;
+        }
+        notes.clear();
     }
     file.close();
 }

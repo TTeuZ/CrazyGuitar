@@ -55,8 +55,9 @@ AChart::AChart()
 AChart::~AChart() { delete this->notes; }
 
 void AChart::startGame() {
-    this->song = new Song{"swallowYourSoul"};
+    this->song = new Song{"presumedDead"};
     UE_LOG(LogTemp, Log, TEXT("AChart::startGame: Song loaded"));
+    this->notes->clearNoteActions();
 
     std::list<std::array<uint16_t, 3>> songNotes{this->song->getRawNotes()};
     if (songNotes.empty()) {

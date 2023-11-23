@@ -72,7 +72,7 @@ void ANoteAction::move(const float& deltaTime) {
     if (!this->canMove) return;
 
     FVector location{this->getPosition()};
-    location.X -= deltaTime * this->notes->getBPM() * 4.f;
+    location.X -= deltaTime * this->notes->getBPM() * 2.75f;
     this->setPosition(location);
 
     if (location.X < -AChart::CHART_SIZE.Y) {
