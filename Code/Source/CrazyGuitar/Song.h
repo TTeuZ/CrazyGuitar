@@ -1,10 +1,12 @@
 #pragma once
 
+// Standard includes
 #include <array>
 #include <cstdint>
 #include <list>
 #include <string>
 
+// Unreal includes
 #include "Containers/UnrealString.h"
 #include "Notes.h"
 

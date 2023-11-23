@@ -13,7 +13,7 @@ AHitbox::AHitbox()
       material{nullptr},
       collisionBox{CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"))},
       visual{CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HitVisual"))} {
-    PrimaryActorTick.bCanEverTick = true;
+    this->PrimaryActorTick.bCanEverTick = true;
 
     this->SetRootComponent(CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent")));
 
@@ -54,13 +54,14 @@ void AHitbox::BeginPlay() { Super::BeginPlay(); }
 
 void AHitbox::Tick(float DeltaTime) { Super::Tick(DeltaTime); }
 
-void AHitbox::onOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
-                             int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult) {
+void AHitbox::onOverlapBegin(UPrimitiveComponent* const overlappedComp, AActor* const otherActor,
+                             UPrimitiveComponent* const otherComp, const int32 otherBodyIndex, const bool bFromSweep,
+                             const FHitResult& sweepResult) {
     this->noteAction = dynamic_cast<ANoteAction*>(otherActor);
 }
 
-void AHitbox::onOverlapEnd(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
-                           int32 otherBodyIndex) {
+void AHitbox::onOverlapEnd(UPrimitiveComponent* const overlappedComp, AActor* const otherActor,
+                           UPrimitiveComponent* const otherComp, const int32 otherBodyIndex) {
     this->noteAction = nullptr;
 }
 

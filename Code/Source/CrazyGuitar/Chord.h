@@ -1,5 +1,6 @@
 #pragma once
 
+// Unreal includes
 #include "CrazyGuitar/Hitbox.h"
 #include "GameFramework/Actor.h"
 #include "Materials/Material.h"
@@ -38,7 +39,6 @@ class AChord : public AActor {
 
     UMaterial *material;
     UStaticMesh *baseVisual;
-
     UPROPERTY(EditAnywhere)
     UStaticMeshComponent *visual;
 };

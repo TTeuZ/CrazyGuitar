@@ -1,5 +1,6 @@
 #include "Chord.h"
 
+// Personal includes
 #include "Chart.h"
 
 const FVector AChord::CHORD_BASE_POSITION{

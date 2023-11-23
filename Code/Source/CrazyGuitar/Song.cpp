@@ -1,6 +1,6 @@
 #include "Song.h"
 
-// C++ includes
+// Standard includes
 #include <cstdint>
 #include <fstream>
 #include <iostream>

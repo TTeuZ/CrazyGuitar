@@ -23,13 +23,14 @@ UCLASS() class CRAZYGUITAR_API AHitbox : public AActor {
 
     virtual void Tick(float DeltaTime) override;
 
+    // All this params are required, otherwise we got a compilation error
     UFUNCTION()
-    void onOverlapBegin(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
-                        int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult);
-
+    void onOverlapBegin(UPrimitiveComponent* const overlappedComp, AActor* const otherActor,
+                        UPrimitiveComponent* const otherComp, const int32 otherBodyIndex, const bool bFromSweep,
+                        const FHitResult& sweepResult);
     UFUNCTION()
-    void onOverlapEnd(UPrimitiveComponent* overlappedComp, AActor* otherActor, UPrimitiveComponent* otherComp,
-                      int32 otherBodyIndex);
+    void onOverlapEnd(UPrimitiveComponent* const overlappedComp, AActor* const otherActor,
+                      UPrimitiveComponent* const otherComp, const int32 otherBodyIndex);
 
     bool verifyHit();
 
@@ -44,7 +45,6 @@ UCLASS() class CRAZYGUITAR_API AHitbox : public AActor {
 
     UStaticMesh* baseVisual;
     UMaterial* material;
-
     UPROPERTY(VisibleAnywhere, Category = "Hitbox")
     UBoxComponent* collisionBox;
     UPROPERTY(EditAnywhere)

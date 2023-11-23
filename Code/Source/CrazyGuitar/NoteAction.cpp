@@ -11,7 +11,7 @@
 #include "UObject/Object.h"
 #include "Components/SphereComponent.h"
 
-ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr} {
+ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr}, visual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
 
     static ConstructorHelpers::FObjectFinder<UStaticMesh> visualAsset{TEXT("/Game/Shapes/Shape_Sphere.Shape_Sphere")};

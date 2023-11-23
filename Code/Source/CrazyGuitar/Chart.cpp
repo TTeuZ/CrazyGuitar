@@ -1,7 +1,6 @@
 #include "Chart.h"
 
 // Personal includes
-#include "Chord.h"
 #include "PlayerSave.h"
 
 // Unreal includes
@@ -51,9 +50,6 @@ AChart::AChart()
     this->chartCamera->SetWorldRotation(AChart::CAMERA_ROTATION);
     this->chartCamera->SetupAttachment(this->RootComponent);
     this->RootComponent->SetRelativeRotation(AChart::CHART_ROTATION);
-
-    // Define player controller
-    this->AutoPossessPlayer = EAutoReceiveInput::Player0;
 }
 
 AChart::~AChart() { delete this->notes; }
@@ -61,8 +57,6 @@ AChart::~AChart() { delete this->notes; }
 void AChart::startGame() {
     this->song = new Song{"swallowYourSoul"};
     UE_LOG(LogTemp, Log, TEXT("AChart::startGame: Song loaded"));
-
-    this->notes->setWorld(this->GetWorld());
 
     std::list<std::array<uint16_t, 3>> songNotes{this->song->getRawNotes()};
     if (songNotes.empty()) {
@@ -88,8 +82,8 @@ void AChart::hitChord(const uint8_t& chord) {
 
 void AChart::BeginPlay() {
     Super::BeginPlay();
+    this->notes->setWorld(this->GetWorld());
     this->SetActorLocation(CHART_LOCATION);
-
     this->createChords();
 }
 
@@ -121,9 +115,8 @@ void AChart::createChords() {
     FActorSpawnParameters spawnParams;
 
     USceneComponent* chordRoot = this->RootComponent;
-
     std::array<AChord*, 4>::iterator it{this->chords.begin()};
-    for (uint8_t i{1}; it != this->chords.end(); ++it, ++i) {
+    for (size_t i{1}; it != this->chords.end(); ++it, ++i) {
         (*it) = this->GetWorld()->SpawnActor<AChord>(AChord::StaticClass(), AChart::CHART_LOCATION,
                                                      FRotator{0.f, 0.f, 0.f}, spawnParams);
         (*it)->setIndex(i - 1);
