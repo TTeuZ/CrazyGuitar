@@ -8,26 +8,28 @@
 #include "Containers/UnrealString.h"
 #include "Notes.h"
 
-class Song {
-public:
+class CRAZYGUITAR_API Song {
+   public:
     Song();
-    Song(const FString dirPath);
-    Song(const std::string name, const std::string artist, const std::string genre, const uint16_t length,
+    Song(const FString& dirPath);
+    Song(const std::string& name, const std::string& artist, const std::string& genre, const uint16_t length,
          const uint16_t bpm);
-    virtual ~Song();
+
+    virtual ~Song() = default;
 
     std::string getLength() const;
-    int getBPM() const;
-    std::list<std::array<uint16_t, 3>> const &getNotes() const;
+    uint16_t getBPM() const;
+    const std::list<std::array<uint16_t, 3>>& getRawNotes() const;
 
-private:
+    void setDirPath(const FString& newDirPath);
+    void setLength(std::string& newLength);
+
+   private:
     const static FString BASE_DIR_PATH;
 
-    void setDirPath(const FString newDirPath);
-    void setLength(std::string newLength);
-    void setLength(int32_t newLength);
+    void readDirPath();
 
-    bool dirExists(const FString path) const;
+    bool dirExists(const FString& path) const;
 
     void readInfo();
     void readNotes();
@@ -38,6 +40,5 @@ private:
     std::string genre;
     int32_t length;
     uint16_t bpm;
-
-    std::list<std::array<uint16_t, 3>> *notes;
+    std::list<std::array<uint16_t, 3>> rawNotes;
 };

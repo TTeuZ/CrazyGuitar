@@ -51,7 +51,7 @@ void Notes::createProceduralNotes(const int32_t n) {
 }
 
 void Notes::createSongNotes(const Song* song) {
-    for (auto& note : song->getNotes()) {
+    for (auto& note : song->getRawNotes()) {
         this->addNoteAction(note[0], note[2]);
     }
     this->bpm = song->getBPM();

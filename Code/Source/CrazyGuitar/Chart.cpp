@@ -64,7 +64,7 @@ void AChart::startGame() {
 
     this->notes->setWorld(this->GetWorld());
 
-    std::list<std::array<uint16_t, 3>> songNotes{s.getNotes()};
+    std::list<std::array<uint16_t, 3>> songNotes{s.getRawNotes()};
     if (songNotes.empty()) {
         UE_LOG(LogTemp, Error, TEXT("AChart::startGame: No notes found"));
         this->notes->createProceduralNotes();
