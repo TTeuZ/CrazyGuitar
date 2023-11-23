@@ -18,7 +18,6 @@ class CRAZYGUITAR_API Notes {
    public:
     Notes();
     Notes(UWorld* const world);
-    // Notes(const Notes&) = delete;
     Notes(UWorld* const world, uint16_t bpm);
 
     /**
@@ -27,27 +26,22 @@ class CRAZYGUITAR_API Notes {
      */
     virtual ~Notes() = default;
 
-    void setWorld(UWorld* const newWorld);
+    uint16_t getBPM() const;
 
-    int getBPM() const;
+    void setWorld(UWorld* const newWorld);
     void setBPM(const uint16_t newBPM);
 
     void startNotes();
-
     void removeNote(ANoteAction* const note);
-
-    void createProceduralNotes(const int32_t n = 100);
-    void createSongNotes(const Song* song);
-
-    // bool addNoteAction(ANoteAction* const note);
+    void createProceduralNotes(const uint32_t n = 100);
+    void createSongNotes(const Song& song);
     bool addNoteAction(const uint8_t chord, const float position);
-
     void clearNoteActions();
 
    private:
     const static FVector DEFAULT_NOTE_LOCATION;
 
+    uint16_t bpm;
     UWorld* world;
     std::list<ANoteAction*> noteActions;
-    uint16_t bpm;
 };
