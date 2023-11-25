@@ -18,6 +18,7 @@ void AChartController::SetupInputComponent() {
     this->InputComponent->BindAction("HitFourthChord", IE_Pressed, this, &AChartController::hitFourthChord);
 
     this->InputComponent->BindAction("Start", IE_Released, this, &AChartController::startGame);
+    this->InputComponent->BindAction("Quit", IE_Released, this, &AChartController::quitGame);
 }
 
 void AChartController::BeginPlay() { this->chart = static_cast<AChart*>(this->GetPawn()); }
@@ -27,6 +28,10 @@ void AChartController::startGame() {
 
     this->chart->startGame();
     if (HUD) HUD->displayGameStats();
+}
+
+void AChartController::quitGame() {
+    UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
 
 void AChartController::hitFirstChord() { this->chart->hitChord(0); }
