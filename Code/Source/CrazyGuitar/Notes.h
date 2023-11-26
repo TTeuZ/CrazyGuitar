@@ -18,7 +18,7 @@ class CRAZYGUITAR_API Notes {
    public:
     Notes();
     Notes(UWorld* const world);
-    Notes(UWorld* const world, uint16_t bpm);
+    Notes(UWorld* const world, uint16_t songBPM);
 
     /**
      * The Unreal Engine cleans up all the actors in game when the game is destroyed
@@ -27,6 +27,7 @@ class CRAZYGUITAR_API Notes {
     virtual ~Notes() = default;
 
     uint16_t getBPM() const;
+    float getGameBPM() const;
 
     /*
      *   Unreal Engine enforce us to use the name newChord instead of chord, otherwise
@@ -34,6 +35,7 @@ class CRAZYGUITAR_API Notes {
      */
     void setWorld(UWorld* const newWorld);
     void setBPM(const uint16_t newBPM);
+    void setGameBPM(const uint16_t newGameBPM);
 
     void startNotes();
     void removeNote(ANoteAction* const note);
@@ -43,10 +45,12 @@ class CRAZYGUITAR_API Notes {
 
    private:
     const static FVector DEFAULT_NOTE_LOCATION;
+    constexpr static uint16_t BPM_MULTIPLIER{275};
+    constexpr static float BPM_DIVIDER{100.f};
 
     bool addNoteAction(const uint8_t chord, const float position);
 
-    uint16_t bpm;
+    int32_t gameBPM;
     UWorld* world;
     std::list<ANoteAction*> noteActions;
 };

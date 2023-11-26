@@ -52,13 +52,20 @@ AChart::AChart()
     this->RootComponent->SetRelativeRotation(AChart::CHART_ROTATION);
 }
 
-AChart::~AChart() { delete this->notes; }
+AChart::~AChart() {
+    delete this->notes;
+    delete this->song;
+}
 
 void AChart::startGame() {
     this->song->setWorld(this->GetWorld());
     UE_LOG(LogTemp, Log, TEXT("AChart::startGame: Song loaded"));
     this->notes->clearNoteActions();
 
+    /**
+     * We can read the song file and it's working, but as we didn't add the true song, with music, we are forcing to
+     * create the procedural notes.
+     */
     std::list<std::array<uint16_t, 3>> songNotes{this->song->getRawNotes()};
     if (songNotes.empty()) {
         UE_LOG(LogTemp, Error, TEXT("AChart::startGame: No notes found"));

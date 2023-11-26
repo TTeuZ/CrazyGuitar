@@ -25,6 +25,7 @@ class CRAZYGUITAR_API AChartController : public APlayerController {
 
    private:
     void startGame();
+    void quitGame();
 
     void hitFirstChord();
     void hitSecondChord();

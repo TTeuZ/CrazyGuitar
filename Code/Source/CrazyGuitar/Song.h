@@ -29,7 +29,7 @@ class CRAZYGUITAR_API Song {
      */
     void setDirPath(const FString& newDirPath);
     void setLength(const std::string& newLength);
-    void setWorld(UWorld* const newWorld); 
+    void setWorld(UWorld* const newWorld);
 
    private:
     const static FString BASE_DIR_PATH;
@@ -46,7 +46,7 @@ class CRAZYGUITAR_API Song {
     uint32_t length;
     uint16_t bpm;
     std::list<std::array<uint16_t, 3>> rawNotes;
-    UWorld *world;
-    UAudioComponent *audioComponent;
-    USoundBase *soundBase;
+    UWorld* world;
+    UAudioComponent* audioComponent;
+    USoundBase* soundBase;
 };

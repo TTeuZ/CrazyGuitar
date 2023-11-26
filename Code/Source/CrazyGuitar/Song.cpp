@@ -121,16 +121,16 @@ void Song::readInfo() {
 }
 
 void Song::readNotes() {
-    // uint8_t chord{0};
-    // uint16_t size{0};
-    // uint16_t position{0};
-    // uint16_t tempo{1};
+    // struct para armazenar as informacoes de cada nota
+    // apenas para facilitar a leitura do arquivo
+    // uso interno da funcao
     typedef struct Note {
         uint8_t chord;
         uint16_t size;
         uint16_t position;
         uint16_t tempo;
     } Note;
+
     uint16_t repeat{1}, notesToRepeat{1};
     std::list<Note*> notes;
 
@@ -173,13 +173,14 @@ void Song::readNotes() {
             continue;
         }
 
-        // Caso tenha passado pelas verificações acima, a linha é uma linha de nota
-        UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Note line"));
 
         // Le as informacoes de cada nota e as adiciona na lista de notas a serem repetidas
         // Caso so tenha uma nota, so realiza a leitura uma vez
         // - Linha de nota: <acorde> <tamanho> <posição> <tempo>
         for (uint16_t i{1}; i <= notesToRepeat; ++i) {
+            if (file.eof()) break;
+            UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Note line"));
+
             Note* note = new Note;
             note->chord = std::stoi(line.substr(0, line.find(' ')));
             line = line.substr(line.find(' ') + 1, line.length());
@@ -194,7 +195,6 @@ void Song::readNotes() {
 
             note->position *= this->bpm / note->tempo;
 
-            // UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Chord: %d, Size: %d, Position: %d"), chord, size, position);
             UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Chord: %d, Size: %d, Position: %d"), note->chord, note->size,
                    note->position);
             if (i < notesToRepeat) {
