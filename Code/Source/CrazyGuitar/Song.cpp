@@ -7,13 +7,15 @@
 #include <list>
 
 // Unreal includes
+#include "Components/AudioComponent.h"
 #include "Containers/UnrealString.h"
 #include "Logging/LogMacros.h"
 #include "Misc/Paths.h"
+#include "Kismet/GameplayStatics.h"
 
 const FString Song::BASE_DIR_PATH{FPaths::ProjectContentDir() + TEXT("Songs/")};
 
-Song::Song() : dirPath{""}, name{""}, artist{""}, genre{""}, length{0}, bpm{0} {}
+Song::Song() : dirPath{""}, name{""}, artist{""}, genre{""}, length{0}, bpm{0}, rawNotes{}, world{nullptr}, audioComponent{nullptr}, soundBase{nullptr} {}
 
 Song::Song(const FString& dirPath) : Song{} {
     this->setDirPath(dirPath);
@@ -44,6 +46,8 @@ void Song::setLength(const std::string& newLength) {
     int32_t seconds{std::stoi(newLength.substr(newLength.find(':') + 1, newLength.length()))};
     this->length = minutes * 60 + seconds;
 }
+
+void Song::setWorld(UWorld* const newWorld) { this->world = newWorld; }
 
 void Song::readDirPath() {
     UE_LOG(LogTemp, Log, TEXT("Song::setDirPath: Reading info and notes"));
@@ -162,8 +166,7 @@ void Song::readNotes() {
             repeat = std::stoi(line.substr(line.find(' ') + 1, line.length()));
             line = line.substr(line.find(' ') + 1, line.length());
             UE_LOG(LogTemp, Log, TEXT("%s"), *FString(line.c_str()));
-            if (line != "")
-                notesToRepeat = std::stoi(line.substr(line.find(' ') + 1, line.length()));
+            if (line != "") notesToRepeat = std::stoi(line.substr(line.find(' ') + 1, line.length()));
             UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Repeat line"));
             UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Repeat: %d"), repeat);
             UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Notes to repeat: %d"), notesToRepeat);
@@ -221,4 +224,45 @@ void Song::readNotes() {
         notes.clear();
     }
     file.close();
+}
+
+void Song::playSong() {
+    UE_LOG(LogTemp, Log, TEXT("Song::playSong: Playing song"));
+
+    if (!this->world) {
+        UE_LOG(LogTemp, Warning, TEXT("Song::playSong: Unable to get the UWorld."));
+        return;
+    }
+
+    // FStringAssetReference é criada usando o caminho relativo ao diretório raiz do projeto
+    FStringAssetReference assetReference{"/Game/Songs/" + this->dirPath / "song.song"};
+    UE_LOG(LogTemp, Log, TEXT("Song::playSong: Full path: %s"), *assetReference.ToString());
+
+    // cria uma Soft Object Reference usando o caminho do Asset
+    TSoftObjectPtr<USoundBase> soundBasePtr(assetReference);
+
+    // carrega o USoundBase usando a Soft Object Reference
+    this->soundBase = soundBasePtr.LoadSynchronous();
+    if (!this->soundBase) {
+        UE_LOG(LogTemp, Warning, TEXT("Song::playSong: Unable to load the soundBase."));
+        return;
+    }
+
+    // se houver um audioComponent existente, significa que tem uma musica tocando
+    // entao para a musica e destroi o componente
+    if (this->audioComponent) {
+        this->audioComponent->Stop();
+        this->audioComponent->ConditionalBeginDestroy();
+        this->audioComponent = nullptr;
+    }
+
+    // cria um UAudioComponent
+    this->audioComponent = UGameplayStatics::SpawnSound2D(this->world, this->soundBase);
+    if (!this->audioComponent) {
+        UE_LOG(LogTemp, Warning, TEXT("Song::playSong: Unable to create the audioComponent."));
+        return;
+    }
+
+    // inicia a reproducao do som
+    this->audioComponent->Play();
 }

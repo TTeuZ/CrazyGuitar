@@ -21,7 +21,7 @@ const FString AChart::CHART_NAME{TEXT("ChartComponent")};
 AChart::AChart()
     : chords{nullptr, nullptr, nullptr, nullptr},
       notes{new Notes{}},
-      song{nullptr},
+      song{new Song{"presumedDead"}},
       material{nullptr},
       visual{nullptr},
       chartCamera{nullptr} {
@@ -55,7 +55,7 @@ AChart::AChart()
 AChart::~AChart() { delete this->notes; }
 
 void AChart::startGame() {
-    this->song = new Song{"presumedDead"};
+    this->song->setWorld(this->GetWorld());
     UE_LOG(LogTemp, Log, TEXT("AChart::startGame: Song loaded"));
     this->notes->clearNoteActions();
 
@@ -67,6 +67,7 @@ void AChart::startGame() {
         UE_LOG(LogTemp, Log, TEXT("AChart::startGame: %d notes found"), songNotes.size());
         this->notes->createSongNotes(*this->song);
     }
+    this->song->playSong();
     this->notes->startNotes();
 }
 
