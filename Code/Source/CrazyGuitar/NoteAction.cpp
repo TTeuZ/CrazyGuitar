@@ -11,6 +11,12 @@
 #include "UObject/Object.h"
 #include "Components/SphereComponent.h"
 
+const std::array<FLinearColor, 4> ANoteAction::CHORD_COLORS{
+    FLinearColor{0.3f, 1.0f, 0.3f}, 
+    FLinearColor{1.0f, 0.3f, 0.3f},
+    FLinearColor{0.3f, 0.3f, 1.0f}, 
+    FLinearColor{1.0f, 1.0f, 0.3f}};
+
 ANoteAction::ANoteAction() : chord{0}, canMove{false}, notes{nullptr}, visual{nullptr} {
     this->PrimaryActorTick.bCanEverTick = true;
 
@@ -46,7 +52,20 @@ uint8_t ANoteAction::getChord() const { return this->chord; }
 
 const FVector ANoteAction::getPosition() const { return this->GetActorLocation(); }
 
-void ANoteAction::setChord(const uint8_t newChord) { this->chord = newChord; }
+void ANoteAction::setChord(const uint8_t newChord) { 
+    this->chord = newChord; 
+
+    // Muda a cor da nota de acordo com o acorde
+    // 1. Obtem o material da nota
+    UMaterialInterface* originalMaterial{this->visual->GetMaterial(0)};
+    UMaterialInstanceDynamic* material{UMaterialInstanceDynamic::Create(originalMaterial, this)};
+    // 2. Obtem a cor do acorde
+    FLinearColor chordColor{ANoteAction::CHORD_COLORS[this->chord]};
+    // 3. Altera a cor do material
+    material->SetVectorParameterValue(TEXT("Color"), chordColor);
+    // 4. Atualiza o material
+    this->visual->SetMaterial(0, material);
+}
 
 void ANoteAction::setCanMove(const bool newCanMove) { this->canMove = newCanMove; }
 

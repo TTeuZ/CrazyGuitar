@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 // Unreal Includes
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
@@ -34,6 +36,7 @@ class CRAZYGUITAR_API ANoteAction : public AActor {
     void playNote();
 
    protected:
+    const static std::array<FLinearColor, 4> CHORD_COLORS;
     virtual void BeginPlay() override;
 
    private:
