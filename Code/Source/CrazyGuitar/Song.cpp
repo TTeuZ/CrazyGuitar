@@ -15,7 +15,16 @@
 
 const FString Song::BASE_DIR_PATH{FPaths::ProjectContentDir() + TEXT("Songs/")};
 
-Song::Song() : dirPath{""}, name{""}, artist{""}, genre{""}, length{0}, bpm{0}, rawNotes{}, world{nullptr}, audioComponent{nullptr}, soundBase{nullptr} {}
+Song::Song()
+    : dirPath{""},
+      name{""},
+      artist{""},
+      genre{""},
+      length{0},
+      bpm{0},
+      world{nullptr},
+      audioComponent{nullptr},
+      soundBase{nullptr} {}
 
 Song::Song(const FString& dirPath) : Song{} {
     this->setDirPath(dirPath);
@@ -136,14 +145,11 @@ void Song::readNotes() {
     std::list<Note*> notes;
 
     UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Reading notes"));
-
     std::string path{std::string(TCHAR_TO_UTF8(*Song::BASE_DIR_PATH)) + std::string(TCHAR_TO_UTF8(*this->dirPath)) +
                      "/notes.data"};
     std::ifstream file{path};
 
     if (!file.is_open()) return;
-
-    // Inicia a leitura das notas
     while (!file.eof()) {
         std::string line;
         std::getline(file, line);
@@ -174,11 +180,10 @@ void Song::readNotes() {
             continue;
         }
 
-
         // Le as informacoes de cada nota e as adiciona na lista de notas a serem repetidas
         // Caso so tenha uma nota, so realiza a leitura uma vez
         // - Linha de nota: <acorde> <tamanho> <posição> <tempo>
-        for (uint16_t i{1}; i <= notesToRepeat; ++i) {
+        for (size_t i{1}; i <= notesToRepeat; ++i) {
             if (file.eof()) break;
             UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Note line"));
 
@@ -198,30 +203,26 @@ void Song::readNotes() {
 
             UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Chord: %d, Size: %d, Position: %d"), note->chord, note->size,
                    note->position);
-            if (i < notesToRepeat) {
-                std::getline(file, line);
-            }
+            if (i < notesToRepeat) std::getline(file, line);
+
             notes.push_back(note);
         }
 
         // Adiciona as notas a lista de notas
         // Caso tenha que repetir, repete
         // Caso nao tenha que repetir, adiciona uma vez
-        for (uint16_t i{1}; i <= repeat; ++i) {
+        for (size_t i{1}; i <= repeat; ++i) {
             UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Repeat: %d"), i);
             std::list<Note*>::iterator it{notes.begin()};
-            for (; it != notes.end(); ++it) {
-                this->rawNotes.push_back({(*it)->chord, (*it)->size, (*it)->position});
-            }
+            for (; it != notes.end(); ++it) this->rawNotes.push_back({(*it)->chord, (*it)->size, (*it)->position});
         }
         repeat = 1;
         notesToRepeat = 1;
 
         // Limpa a lista de notas a serem repetidas
         std::list<Note*>::iterator it{notes.begin()};
-        for (; it != notes.end(); ++it) {
-            delete *it;
-        }
+        for (; it != notes.end(); ++it) delete *it;
+
         notes.clear();
     }
     file.close();

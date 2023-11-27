@@ -5,7 +5,7 @@
 #include "Engine/Engine.h"
 
 const FVector AHitbox::HITBOX_BASE_LOCATION{-500.f, 0.f, 0.f};
-const FVector AHitbox::HITBOX_SIZE{375.f, 700.f, 2.5f};
+const FVector AHitbox::HITBOX_SIZE{475.f, 700.f, 2.5f};
 
 AHitbox::AHitbox()
     : noteAction{nullptr},

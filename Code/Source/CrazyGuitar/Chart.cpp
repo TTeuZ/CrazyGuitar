@@ -62,10 +62,6 @@ void AChart::startGame() {
     UE_LOG(LogTemp, Log, TEXT("AChart::startGame: Song loaded"));
     this->notes->clearNoteActions();
 
-    /**
-     * We can read the song file and it's working, but as we didn't add the true song, with music, we are forcing to
-     * create the procedural notes.
-     */
     std::list<std::array<uint16_t, 3>> songNotes{this->song->getRawNotes()};
     if (songNotes.empty()) {
         UE_LOG(LogTemp, Error, TEXT("AChart::startGame: No notes found"));
