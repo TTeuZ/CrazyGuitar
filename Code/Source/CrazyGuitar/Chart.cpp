@@ -69,8 +69,8 @@ void AChart::startGame() {
     } else {
         UE_LOG(LogTemp, Log, TEXT("AChart::startGame: %d notes found"), songNotes.size());
         this->notes->createSongNotes(*this->song);
+        this->song->playSong();
     }
-    this->song->playSong();
     this->notes->startNotes();
 }
 
