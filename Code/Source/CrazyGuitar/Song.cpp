@@ -76,6 +76,7 @@ bool Song::dirExists(const FString& path) const {
         return false;
     }
 
+    std::cout << "Song::dirExists: Directory exists" << std::endl;
     return true;
 }
 
@@ -83,7 +84,7 @@ void Song::readInfo() {
     UE_LOG(LogTemp, Log, TEXT("Song::readInfo: Reading info"));
 
     std::string path{std::string(TCHAR_TO_UTF8(*Song::BASE_DIR_PATH)) + std::string(TCHAR_TO_UTF8(*this->dirPath)) +
-                     "/song.info"};
+                     "/info.data"};
     std::ifstream file{path};
 
     if (!file.is_open()) return;
@@ -137,7 +138,7 @@ void Song::readNotes() {
     UE_LOG(LogTemp, Log, TEXT("Song::readNotes: Reading notes"));
 
     std::string path{std::string(TCHAR_TO_UTF8(*Song::BASE_DIR_PATH)) + std::string(TCHAR_TO_UTF8(*this->dirPath)) +
-                     "/song.notes"};
+                     "/notes.data"};
     std::ifstream file{path};
 
     if (!file.is_open()) return;
